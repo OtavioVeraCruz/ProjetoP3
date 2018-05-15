@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Show UP!</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="senha">Senha</string>
+    <string name="cadastrar_se">Cadastrar</string>
+    <string name="login">Login</string>
+    <string name="artista">Artista</string>
+    <string name="voc">Você é?</string>
+    <string name="nome">Nome</string>
+    <string name="email">Email</string>
+
+
+</resources>

@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import com.example.otavio.newshowup.MainActivity;
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.utils.Firebase;
-import com.example.otavio.newshowup.utils.Snapshot;
+import com.example.otavio.newshowup.utils.SnapshotArtista;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                     Firebase.recoverFromUserUid(user.getUid(), new Runnable() {
                         @Override
                         public void run() {
-                            String artista_id = Snapshot.getId_artista();
+                            String artista_id = SnapshotArtista.getId_artista();
                             if(artista_id != null) {
                                 Firebase.recover_artista(artista_id, context.getCacheDir().getPath(),new Runnable() {
                                     @Override

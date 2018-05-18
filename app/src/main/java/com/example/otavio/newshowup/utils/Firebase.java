@@ -47,6 +47,7 @@ public class Firebase {
         String uid;
         String youtube_channel;
 
+        public Artista(){}
         public Artista(String id,String nome,String foto,DadosArtista dadosArtista,String token,
                        String uid,String youtube_channel){
             this.id=id;
@@ -74,6 +75,55 @@ public class Firebase {
         }
     }
 
+    @IgnoreExtraProperties
+    public static class Contratante{
+        public String id;
+        String nome;
+        String foto;
+        String token;
+        String uid;
+        String telefone;
+
+        public Contratante(){}
+        public Contratante(String id,String nome,String foto,String token,
+                       String uid,String telefone){
+            this.id=id;
+            this.nome=nome;
+            this.foto=foto;
+            this.token=token;
+            this.uid=uid;
+            this.telefone=telefone;
+        }
+
+
+    }
+
+    @IgnoreExtraProperties
+    public static class Evento{
+        String id;
+        String id_contratante;
+        String nome;
+        String descricao;
+        String instrumentos;
+        double valor;
+        ArrayList<String>fotos;
+
+        public Evento() {
+        }
+        public Evento(String id, String id_contratante, String nome,
+                      String descricao, String instrumentos, double valor, ArrayList<String> fotos) {
+            this.id = id;
+            this.id_contratante = id_contratante;
+            this.nome = nome;
+            this.descricao = descricao;
+            this.instrumentos = instrumentos;
+            this.valor = valor;
+            this.fotos = fotos;
+        }
+
+    }
+
+
     public static void recover_artista(String artista_id, String path, final Runnable runnable){
         TaskCompletionSource<Boolean> getArtistaSource = new TaskCompletionSource<>();
         Task getArtista = getArtistaSource.getTask();
@@ -83,7 +133,7 @@ public class Firebase {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                if (Snapshot.getArtista()!=null){
+                if (SnapshotArtista.getArtista()!=null){
                     runnable.run();
                 }
                 else {
@@ -103,7 +153,7 @@ public class Firebase {
                     Artista artista = data.getValue(Artista.class);
                     assert artista != null;
                     if(artista.id.equals(id)) {
-                        Snapshot.getInstance().setArtista(artista);
+                        SnapshotArtista.getInstance().setArtista(artista);
                         MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
                         myFirebaseInstanceIDService.onTokenRefresh();
                     }
@@ -127,14 +177,14 @@ public class Firebase {
         });
 
     }
-    public void addArtist(String nome, String foto, DadosArtista dadosArtista,String uid){
+    public void insertArtist(String nome, String foto, DadosArtista dadosArtista,String uid){
         String id = mDatabaseRef.child("Artista").push().getKey();
         final Artista artista=new Artista(id,nome,null,dadosArtista,null,uid,null);
-        Snapshot.setArtista(artista);
+        SnapshotArtista.setArtista(artista);
         uploadPhoto(id, foto, "artista", new Runnable() {
             @Override
             public void run() {
-                Artista artista1=Snapshot.getArtista();
+                Artista artista1= SnapshotArtista.getArtista();
                 mDatabaseRef.child("Artista").child(artista1.id).setValue(artista1);
                 MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
                 myFirebaseInstanceIDService.onTokenRefresh();
@@ -157,7 +207,7 @@ public class Firebase {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 assert downloadUrl != null;
-                Snapshot.getArtista().foto=downloadUrl.toString();
+                SnapshotArtista.getArtista().foto=downloadUrl.toString();
                 onLoaded.run();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -184,7 +234,7 @@ public class Firebase {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                     if(Objects.equals(childDataSnapshot.child("user_uid").getValue(), uid)){
                         String artista_id = (String) childDataSnapshot.child("id").getValue();
-                        Snapshot.setId_artista(artista_id);
+                        SnapshotArtista.setId_artista(artista_id);
                         onLoaded.run();
                     }
                 }

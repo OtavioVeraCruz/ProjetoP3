@@ -2,17 +2,17 @@ package com.example.otavio.newshowup.utils;
 
 import android.content.SharedPreferences;
 
-public class Snapshot {
+public class SnapshotArtista {
 
     public static Firebase.Artista artista;
     public static String id_artista;
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
-    private static final Snapshot snapshot = new Snapshot();
+    private static final SnapshotArtista snapshot = new SnapshotArtista();
 
-    private Snapshot() {}
+    private SnapshotArtista() {}
 
-    public static Snapshot getInstance() {
+    public static SnapshotArtista getInstance() {
         return snapshot;
     }
 
@@ -21,7 +21,7 @@ public class Snapshot {
     }
 
     public static void setArtista(Firebase.Artista artista) {
-        Snapshot.artista = artista;
+        SnapshotArtista.artista = artista;
     }
 
     public static String getId_artista() {
@@ -29,6 +29,6 @@ public class Snapshot {
     }
 
     public static void setId_artista(String id_artista) {
-        Snapshot.id_artista = id_artista;
+        SnapshotArtista.id_artista = id_artista;
     }
 }

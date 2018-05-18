@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".auth.ArtistRegistrationActivity" />
-        <activity android:name=".auth.ContratanteRegistrationActivity"/>
+        <activity android:name=".auth.ContratanteRegistrationActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -39,6 +39,14 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".artista.HomeArtistaActivity"
+            android:label="@string/title_activity_home_artista"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".contratante.HomeContratanteActivity"
+            android:label="@string/title_activity_home_contratante"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

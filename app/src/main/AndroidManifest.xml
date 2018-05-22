@@ -21,7 +21,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,6 +38,7 @@
             </intent-filter>
         </service>
 
+
         <activity
             android:name=".artista.HomeArtistaActivity"
             android:label="@string/title_activity_home_artista"
@@ -46,7 +46,9 @@
         <activity
             android:name=".contratante.HomeContratanteActivity"
             android:label="@string/title_activity_home_contratante"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".auth.Register2Activity"/>
+
     </application>
 
 </manifest>

@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d("Register", "onAuthStateChanged:signed_in:" + user.getUid());
                     finish();
-                    Intent intent = new Intent(RegisterActivity.this, ArtistRegistrationActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, Register2Activity.class);
                     startActivity(intent);
                 } else {
                     // User is signed out
@@ -64,18 +64,17 @@ public class RegisterActivity extends AppCompatActivity {
 
                     mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                static final String TAG = "RegisterActivity";
+
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.d("Register", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
                                     if (!task.isSuccessful()) {
                                         Toast.makeText(RegisterActivity.this, "Cadastro falhou! O email deve ser válido e a senha maior que 6 caracteres.", Toast.LENGTH_SHORT).show();
                                     }
                                     else {
-                                        Toast.makeText(RegisterActivity.this, "Cadastro finalizado com sucesso!", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG,"Passo 1 completo!");
                                     }
                                 }
                             });

@@ -62,16 +62,14 @@ public class Firebase {
     }
     @IgnoreExtraProperties
     public static class DadosArtista{
-        ArrayList<String>contatos;
+        String telefone;
         String cidade;
         String estado;
-        String data_nasc;
 
-        public DadosArtista(ArrayList<String>contatos,String cidade,String estado,String data_nasc){
-            this.contatos=contatos;
+        public DadosArtista(  String telefone,String cidade,String estado){
+            this.telefone=telefone;
             this.cidade=cidade;
             this.estado=estado;
-            this.data_nasc=data_nasc;
         }
     }
 
@@ -153,7 +151,7 @@ public class Firebase {
                     Artista artista = data.getValue(Artista.class);
                     assert artista != null;
                     if(artista.id.equals(id)) {
-                        SnapshotArtista.getInstance().setArtista(artista);
+                        SnapshotArtista.setArtista(artista);
                         MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
                         myFirebaseInstanceIDService.onTokenRefresh();
                     }
@@ -177,7 +175,7 @@ public class Firebase {
         });
 
     }
-    public void insertArtist(String nome, String foto, DadosArtista dadosArtista,String uid){
+    public static void insertArtist(String nome, String foto, DadosArtista dadosArtista,String uid,final Runnable onLoad){
         String id = mDatabaseRef.child("Artista").push().getKey();
         final Artista artista=new Artista(id,nome,null,dadosArtista,null,uid,null);
         SnapshotArtista.setArtista(artista);
@@ -190,12 +188,15 @@ public class Firebase {
                 myFirebaseInstanceIDService.onTokenRefresh();
             }
         });
+        onLoad.run();
     }
-    public void uploadPhoto(String id,String foto, String entity, final Runnable onLoaded){
+    public static void uploadPhoto(String id,String foto, String entity, final Runnable onLoaded){
+        Log.d(TAG,"uploading started!");
         Uri uri=Uri.fromFile(new File(foto));
+        Log.d(TAG,foto);
         StorageReference storageReference;
         if (entity.equalsIgnoreCase("artista")){
-            storageReference=mStorageRef.child("foto_artista"+id+"foto_artista");
+            storageReference=mStorageRef.child("foto_artista/"+id+"/foto_artista");
         }
         else{
             storageReference=mStorageRef.child("foto_contratante"+id+"foto_contratante");
@@ -218,23 +219,27 @@ public class Firebase {
         });
     }
 
-
     public static FirebaseAuth getmAuth(){
         return mAuth;
     }
     public static void writeToken(String id, String token){
         mDatabaseRef.child("Artista").child(id).child("token").setValue(token);
     }
-    public static void recoverFromUserUid(final String uid, final Runnable onLoaded){
-        Query query = mDatabaseRef.child("Artista");
+    public static void recoverFromUserUid(final String uid, final String tipo , final Runnable onLoaded){
+        Query query = mDatabaseRef.child(tipo);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                     if(Objects.equals(childDataSnapshot.child("user_uid").getValue(), uid)){
-                        String artista_id = (String) childDataSnapshot.child("id").getValue();
-                        SnapshotArtista.setId_artista(artista_id);
+                        String id = (String) childDataSnapshot.child("id").getValue();
+                        if (tipo.equals("Artista")){
+                            SnapshotArtista.setId_artista(id);
+                        }
+                        else {
+                            SnapshotContratante.setId_contratante(id);
+                        }
                         onLoaded.run();
                     }
                 }

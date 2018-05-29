@@ -3,8 +3,11 @@
     package="com.example.otavio.newshowup">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,13 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".auth.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,7 +38,9 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
+        <service
+            android:name=".services.SearchEventService"
+            android:enabled="true" />
 
         <activity
             android:name=".artista.HomeArtistaActivity"
@@ -47,8 +50,18 @@
             android:name=".contratante.HomeContratanteActivity"
             android:label="@string/title_activity_home_contratante"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".auth.Register2Activity"/>
-
+        <activity android:name=".auth.Register2Activity" />
+        <activity android:name=".artista.BuscarEventoActivity" />
+        <activity android:name=".artista.FavoritesEventsActivity" />
+        <activity android:name=".contratante.BuscarArtistaActivity" />
+        <activity android:name=".contratante.MeusEventosActivity" />
+        <activity android:name=".contratante.CriarEventoActivity" />
+        <activity android:name=".youtube.YoutubeActivity" />
+        <activity android:name=".artista.PerfilArtistaActivity" />
+        <activity android:name=".evento.DetalhesEventoActivity" />
+        <activity android:name=".artista.ResultadoBuscaEventoActivity" />
+        <activity android:name=".contratante.PerfilContratanteActivity" />
+        <activity android:name=".contratante.ArtistasFavoritosActivity"></activity>
     </application>
 
 </manifest>

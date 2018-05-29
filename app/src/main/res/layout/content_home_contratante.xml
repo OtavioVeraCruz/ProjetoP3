@@ -8,4 +8,21 @@
     tools:context=".contratante.HomeContratanteActivity"
     tools:showIn="@layout/app_bar_home_contratante">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_contratatnte"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginRight="56dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>

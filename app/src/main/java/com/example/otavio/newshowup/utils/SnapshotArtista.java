@@ -31,4 +31,10 @@ public class SnapshotArtista {
     public static void setId_artista(String id_artista) {
         SnapshotArtista.id_artista = id_artista;
     }
+
+    public static void reset(){
+        artista=null;
+        id_artista=null;
+
+    }
 }

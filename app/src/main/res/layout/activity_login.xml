@@ -5,16 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".auth.LoginActivity"
-    android:id="@+id/constraint_login">
+    android:id="@+id/constraint_login"
+    android:background="@color/colorPrimaryDark">
 
     <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/progressbar"
-        android:visibility="gone"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:indeterminate="true"
-        android:layout_gravity="center"/>
-        
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <android.support.design.widget.TextInputEditText
         android:id="@+id/email"
@@ -24,7 +35,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="100dp"
+        android:background="@color/mdtp_transparent"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
@@ -41,39 +53,47 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="56dp"
+        android:background="@color/mdtp_transparent"
         android:hint="@string/senha"
+        android:inputType="textPassword"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
-        android:inputType="textPassword"/>
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="56dp"
-        android:background="@color/mdtp_transparent"
-        android:textColor="#015"
-        android:text="@string/cadastrar_se"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
-
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="353dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="168dp"
-        android:text="@string/login"
+        android:layout_marginTop="52dp"
+        android:background="@color/mdtp_accent_color"
+        android:text="@string/cadastrar_se"
+        android:textColor="@color/mdtp_transparent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="76dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/login"
+        android:textColor="@color/mdtp_transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
         tools:ignore="MissingConstraints" />

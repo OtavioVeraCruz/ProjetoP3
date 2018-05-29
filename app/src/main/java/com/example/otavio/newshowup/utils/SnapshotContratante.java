@@ -31,4 +31,9 @@ public class SnapshotContratante {
         SnapshotArtista.id_artista = id_artista;
     }
 
+    public static void reset(){
+        contratante=null;
+        id_contratante=null;
+    }
+
 }

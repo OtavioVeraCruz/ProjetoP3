@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.artista.HomeArtistaActivity;
+import com.example.otavio.newshowup.utils.ArrayString;
 import com.example.otavio.newshowup.utils.CircleTransform;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.squareup.picasso.MemoryPolicy;
@@ -57,8 +58,6 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
     @BindView(R.id.spinner_faixa_preco)Spinner spinner_faixa_preco;
     @BindView(R.id.editTelefone)EditText editTelefone;
     @BindView(R.id.btn_next)Button btn_next;
-    String [] generos={"Gênero musical","Brega","Eletrônica","Forró","Funk","Gospel","Indie","Jazz","Pagode","Pop","Rock","Samba","Sertanejo"};
-    String [] faixas_preco={"Faixa de preço por show","R$ 80,00 - 150,00","R$ 150,00 - 250,00","R$ 250,00 - 400,00","R$ 400,00 - 600,00","Outros"};
     private String picturePath;
     private static final int RESULT_TAKE_PICTURE = 123;
     private static final int RESULT_PICK_PICTURE = 283;
@@ -68,9 +67,9 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_registration);
         ButterKnife.bind(this);
-        ArrayAdapter<String> adapterGenero=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, generos);
+        ArrayAdapter<String> adapterGenero=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.generos);
         spinner_genero.setAdapter(adapterGenero);
-        ArrayAdapter<String> adapterPreco=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, faixas_preco);
+        ArrayAdapter<String> adapterPreco=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.faixas_preco);
         spinner_faixa_preco.setAdapter(adapterPreco);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String uid=preferences.getString("uid",null);
@@ -91,7 +90,7 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
         spinner_faixa_preco.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                faixa_preco[0] =parent.getItemAtPosition(position).toString();
+                faixa_preco[0] = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -106,14 +105,14 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
 
                 if (!editNome.getText().toString().equals("")&&!editCidade.getText().toString().equals("")&&
                         !editEstado.getText().toString().equals("")&&!editTelefone.getText().toString().equals("")&&
-                       !genero[0].equals(generos[0])&&!faixa_preco[0].equals(faixas_preco[0])){
+                       !genero[0].equals(ArrayString.generos[0])&&!faixa_preco[0].equals(ArrayString.faixas_preco[0])){
                     progressBarHolder.setAlpha(0.4f);
                     progressBar.setVisibility(View.VISIBLE);
                     //disable user interaction
                     getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Firebase.DadosArtista dadosArtista=new Firebase.DadosArtista(editTelefone.getText().toString(),
-                            editCidade.getText().toString(),editEstado.getText().toString());
+                            editCidade.getText().toString(),editEstado.getText().toString(),genero[0],faixa_preco[0]);
                     Firebase.insertArtist(editNome.getText().toString(),picturePath,dadosArtista,uid,new Runnable(){
                         @Override
                         public void run() {
@@ -139,7 +138,7 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
                 else if(picturePath==null){
                     Toast.makeText(ArtistRegistrationActivity.this, "Escolha ou tire uma foto!", Toast.LENGTH_SHORT).show();
                 }
-                else if (genero[0].equals(generos[0])){
+                else if (genero[0].equals(ArrayString.generos[0])){
                     Toast.makeText(ArtistRegistrationActivity.this, "Escolha um gênero da lista!", Toast.LENGTH_SHORT).show();
                 }
                 else{

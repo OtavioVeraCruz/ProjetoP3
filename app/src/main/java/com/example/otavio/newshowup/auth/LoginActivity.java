@@ -3,10 +3,8 @@ package com.example.otavio.newshowup.auth;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -50,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.btnRegister)Button register;
     @BindView(R.id.constraint_login)ConstraintLayout constraintLayout;
     @BindView(R.id.progressbar)ProgressBar progressBar;
-    SharedPreferences sharedPreferences;
     private static final int MY_PERMISSIONS = 2;
     //private static final int RC_SIGN_IN = 9001;
 
@@ -59,21 +56,22 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        mAuth=Firebase.getmAuth();
+        mAuth=FirebaseAuth.getInstance();
         context=this;
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!editEmail.getText().toString().equals("")
                         &&!editEmail.getText().toString().equals("")){
                     login.setEnabled(false);
+                    register.setEnabled(false);
                         mAuth.signInWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
                                         if (!task.isSuccessful()) {
                                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                                             Toast.makeText(LoginActivity.this, "Login falhou!",
@@ -95,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Digite a senha", Toast.LENGTH_SHORT).show();
                     }
                     login.setEnabled(true);
+                    register.setEnabled(true);
                 }
         });
 
@@ -114,50 +113,26 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(getString(R.string.saved_user_uid),user.getUid() );
-                    editor.apply();
-
                     editEmail.setText(user.getEmail());
                     editPassword.setText("********");
 
                     //carregar dados do usuário
                     constraintLayout.setAlpha(0.4f);
+                    login.setAlpha(0.4f);
+                    register.setAlpha(0.4f);
                     progressBar.setVisibility(View.VISIBLE);
 
                     //disable user interaction
                     getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Firebase.recoverFromUserUid(user.getUid(),"Artista" ,new Runnable() {
-                        @Override
-                        public void run() {
-                            String artista_id = SnapshotArtista.getId_artista();
-                            if(artista_id != null) {
-                                Firebase.recover_artista(artista_id, context.getCacheDir().getPath(),new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        constraintLayout.setAlpha(1f);
-                                        progressBar.setVisibility(View.GONE);
-                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                        Intent intent = new Intent(LoginActivity.this, HomeArtistaActivity.class);
-                                        startActivity(intent);
-
-                                    }
-                                });
-                            }
-                            else {
-                                Log.d(TAG, "Não é artista!");
-                            }
-                        }
-                    });
 
                     Firebase.recoverFromUserUid(user.getUid(),"Contratante" ,new Runnable() {
                         @Override
                         public void run() {
-                            String artista_id = SnapshotArtista.getId_artista();
-                            if(artista_id != null) {
-                                Firebase.recover_artista(artista_id, context.getCacheDir().getPath(),new Runnable() {
+                            String contratante_id = SnapshotContratante.getId_contratante();
+                            Log.d(TAG,"ID: "+ contratante_id);
+                            if(contratante_id != null) {
+                                Firebase.recover_contratante(contratante_id,new Runnable() {
                                     @Override
                                     public void run() {
                                         constraintLayout.setAlpha(1f);
@@ -165,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         Intent intent = new Intent(LoginActivity.this, HomeContratanteActivity.class);
                                         startActivity(intent);
+                                        finish();
 
                                     }
                                 });
@@ -174,22 +150,48 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    if (SnapshotArtista.getArtista()==null&& SnapshotContratante.getContratante()==null){
-                        constraintLayout.setAlpha(1f);
-                        progressBar.setVisibility(View.GONE);
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        Intent intent = new Intent(LoginActivity.this, Register2Activity.class);
-                        startActivity(intent);
-                    }
+                    Firebase.recoverFromUserUid(user.getUid(),"Artista" ,new Runnable() {
+                        @Override
+                        public void run() {
+                            String artista_id = SnapshotArtista.getId_artista();
+                            Log.d(TAG,"Id: "+ artista_id);
+                            if(artista_id != null) {
+                                Firebase.getArtistaT(artista_id,new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        constraintLayout.setAlpha(1f);
+                                        login.setAlpha(1f);
+                                        register.setAlpha(1f);
+                                        progressBar.setVisibility(View.GONE);
+                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        Intent intent = new Intent(LoginActivity.this, HomeArtistaActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                            }
+                            else {
+                                Log.d(TAG, "Não é artista!");
 
-                } else {
+                            }
+                        }
+                    });
+
+
+                } if (user!=null && SnapshotArtista.getId_artista()==null && SnapshotContratante.getId_contratante()==null){
+                    constraintLayout.setAlpha(1f);
+                    progressBar.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Intent intent = new Intent(LoginActivity.this, Register2Activity.class)
+                            .putExtra("uid",user.getUid());
+                    startActivity(intent);
+                }
+                else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-
             }
         };
-
 
     }
 
@@ -214,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -229,16 +232,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
         mAuth.removeAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
 }

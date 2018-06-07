@@ -6,17 +6,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/home"
-            android:icon="@drawable/ic_action_home"
+            android:id="@+id/home_artista"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home" />
         <item
+            android:id="@+id/edit_perfil"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/perfil" />
+        <item
             android:id="@+id/eventos_fav"
-            android:icon="@drawable/ic_action_starred"
+            android:icon="@drawable/ic_star_black_24dp"
             android:title="@string/eventos_favoritos" />
 
         <item
             android:id="@+id/logout"
-            android:icon="@drawable/ic_action_logoff"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="@string/sair"/>
     </group>
 

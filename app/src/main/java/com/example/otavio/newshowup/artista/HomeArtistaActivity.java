@@ -2,13 +2,18 @@ package com.example.otavio.newshowup.artista;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,15 +25,18 @@ import android.widget.TextView;
 
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.auth.LoginActivity;
+import com.example.otavio.newshowup.evento.EventoAdapter;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.LoadImg;
 import com.example.otavio.newshowup.utils.SnapshotArtista;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -39,13 +47,18 @@ public class HomeArtistaActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener mAuthListener;
     ImageView img_profile;
 
-    @BindView(R.id.recycler_artist)RecyclerView recyclerView;
+    ArrayList<Firebase.Evento>eventos;
+
+    RecyclerView recyclerView;
+    EventoAdapter eventoAdapter;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_artista);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         ButterKnife.bind(this);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -68,6 +81,18 @@ public class HomeArtistaActivity extends AppCompatActivity
             text_nome.setText(nome);
         }
 
+        recyclerView=findViewById(R.id.recycler_artist);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager lm=new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(lm);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),LinearLayoutManager.VERTICAL));
+
+        eventos=new ArrayList<>();
+
+        eventoAdapter=new EventoAdapter(this,eventos);
+        recyclerView.setAdapter(eventoAdapter);
+        getEventos();
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -87,6 +112,26 @@ public class HomeArtistaActivity extends AppCompatActivity
             }
         };
 
+
+    }
+
+    public void getEventos(){
+        Firebase.mDatabaseRef.child("Evento").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data :dataSnapshot.getChildren()){
+                    Firebase.Evento evento=data.getValue(Firebase.Evento.class);
+                    Log.d(TAG, "Evento "+evento.nome);
+                    eventos.add(evento);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -152,8 +197,10 @@ public class HomeArtistaActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.home) {
+        if (id == R.id.home_artista) {
 
+        } else if (id==R.id.edit_perfil){
+            startActivity(new Intent(this,PerfilArtistaActivity.class));
         } else if (id == R.id.eventos_fav) {
             startActivity(new Intent(this,FavoritesEventsActivity.class));
 

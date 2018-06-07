@@ -16,23 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".auth.LoginActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".auth.RegisterActivity" />
-        <activity android:name=".auth.ArtistRegistrationActivity" />
-        <activity android:name=".auth.ContratanteRegistrationActivity" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <service android:name=".services.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -43,25 +29,78 @@
             android:enabled="true" />
 
         <activity
+            android:name=".auth.LoginActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".auth.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/registrar"/>
+        <activity android:name=".auth.ArtistRegistrationActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/registrar"/>
+        <activity android:name=".auth.ContratanteRegistrationActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/registrar"/>
+        <activity
             android:name=".artista.HomeArtistaActivity"
             android:label="@string/title_activity_home_artista"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".contratante.HomeContratanteActivity"
             android:label="@string/title_activity_home_contratante"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".auth.Register2Activity" />
-        <activity android:name=".artista.BuscarEventoActivity" />
-        <activity android:name=".artista.FavoritesEventsActivity" />
-        <activity android:name=".contratante.BuscarArtistaActivity" />
-        <activity android:name=".contratante.MeusEventosActivity" />
-        <activity android:name=".contratante.CriarEventoActivity" />
-        <activity android:name=".youtube.YoutubeActivity" />
-        <activity android:name=".artista.PerfilArtistaActivity" />
-        <activity android:name=".evento.DetalhesEventoActivity" />
-        <activity android:name=".artista.ResultadoBuscaEventoActivity" />
-        <activity android:name=".contratante.PerfilContratanteActivity" />
-        <activity android:name=".contratante.ArtistasFavoritosActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".auth.Register2Activity"
+            android:screenOrientation="portrait"
+            android:label="@string/registrar"/>
+        <activity android:name=".artista.BuscarEventoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/buscar"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".artista.FavoritesEventsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/eventos_favoritos"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".contratante.BuscarArtistaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/buscar"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".contratante.MeusEventosActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/meus_eventos"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".contratante.CriarEventoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/criar_evento"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".youtube.YoutubeActivity"/>
+        <activity android:name=".artista.PerfilArtistaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/perfil"/>
+        <activity android:name=".evento.DetalhesEventoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/detalhes_evento"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".artista.ResultadoBuscaEventoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/resultado"/>
+        <activity android:name=".contratante.PerfilContratanteActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/perfil"
+            android:theme="@style/SearchTheme"/>
+        <activity android:name=".contratante.ArtistasFavoritosActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/artistas_favoritos"/>
+        <activity android:name=".contratante.EditarEventoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/editar_evento"
+            android:theme="@style/SearchTheme"/>
     </application>
 
 </manifest>

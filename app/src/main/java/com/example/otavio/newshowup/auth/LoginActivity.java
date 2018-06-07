@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String contratante_id = SnapshotContratante.getId_contratante();
-                            Log.d(TAG,"ID: "+ contratante_id);
+                            Log.d(TAG,"ID contratante: "+ contratante_id);
                             if(contratante_id != null) {
                                 Firebase.recover_contratante(contratante_id,new Runnable() {
                                     @Override
@@ -154,9 +154,9 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String artista_id = SnapshotArtista.getId_artista();
-                            Log.d(TAG,"Id: "+ artista_id);
+                            Log.d(TAG,"Id artista: "+ artista_id);
                             if(artista_id != null) {
-                                Firebase.getArtistaT(artista_id,new Runnable() {
+                                Firebase.recover_artista(artista_id,new Runnable() {
                                     @Override
                                     public void run() {
                                         constraintLayout.setAlpha(1f);
@@ -178,14 +178,15 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
 
-                } if (user!=null && SnapshotArtista.getId_artista()==null && SnapshotContratante.getId_contratante()==null){
+                } /*if (user!=null && SnapshotArtista.getId_artista()==null &&
+                        SnapshotContratante.getId_contratante()==null){
                     constraintLayout.setAlpha(1f);
                     progressBar.setVisibility(View.GONE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Intent intent = new Intent(LoginActivity.this, Register2Activity.class)
-                            .putExtra("uid",user.getUid());
+                            .putExtra("profile_exists",2);
                     startActivity(intent);
-                }
+                }*/
                 else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");

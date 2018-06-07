@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("Register", "onAuthStateChanged:signed_in:" + user.getUid());
                     finish();
                     Intent intent = new Intent(RegisterActivity.this, Register2Activity.class).
-                            putExtra("uid",user.getUid());
+                            putExtra("profile_exists",1);
                     startActivity(intent);
                 } else {
                     // User is signed out

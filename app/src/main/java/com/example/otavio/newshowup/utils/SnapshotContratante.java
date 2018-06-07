@@ -5,6 +5,16 @@ import android.content.SharedPreferences;
 public class SnapshotContratante {
     public static Firebase.Contratante contratante;
     public static String id_contratante;
+
+    public static Firebase.Evento getEvento() {
+        return evento;
+    }
+
+    public static void setEvento(Firebase.Evento evento) {
+        SnapshotContratante.evento = evento;
+    }
+
+    public static Firebase.Evento evento;
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
     private static final SnapshotContratante snapshotContratante = new SnapshotContratante();
@@ -27,13 +37,14 @@ public class SnapshotContratante {
         return id_contratante;
     }
 
-    public static void setId_contratante(String id_artista) {
-        SnapshotArtista.id_artista = id_artista;
+    public static void setId_contratante(String id_contratante) {
+        SnapshotContratante.id_contratante = id_contratante;
     }
 
     public static void reset(){
         contratante=null;
         id_contratante=null;
+        evento=null;
     }
 
 }

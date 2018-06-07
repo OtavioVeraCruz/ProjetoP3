@@ -1,9 +1,8 @@
-package com.example.otavio.newshowup.evento;
+package com.example.otavio.newshowup.contratante;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,33 +15,31 @@ import com.example.otavio.newshowup.utils.LoadImg;
 
 import java.util.ArrayList;
 
-public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.ViewHolder> {
-    private ArrayList<Firebase.Evento>eventos;
+public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHolder> {
+
+    private ArrayList<Firebase.Artista> artistas;
     private Context context;
-    public EventoAdapter(Context context,ArrayList<Firebase.Evento>eventos){
-        this.eventos=eventos;
+    public ArtistaAdapter(ArrayList<Firebase.Artista>artistas,Context context){
+        this.artistas=artistas;
         this.context=context;
     }
     @NonNull
     @Override
-    public EventoAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("Evento adapter","Entrou");
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).
+    public ArtistaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ArtistaAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.item_evento,parent,false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventoAdapter.ViewHolder holder, int position) {
-        String url=eventos.get(position).fotos.get(0);
-        String title=eventos.get(position).nome;
-        String preco=eventos.get(position).faixa_preco;
-        String cidade=eventos.get(position).cidade;
-        String data=eventos.get(position).data;
+    public void onBindViewHolder(@NonNull ArtistaAdapter.ViewHolder holder, int position) {
+        String url=artistas.get(position).foto;
+        String title=artistas.get(position).nome;
+        String preco=artistas.get(position).dadosArtista.faixa_preco;
+        String cidade=artistas.get(position).dadosArtista.cidade;
         LoadImg.loadImage(url,holder.imageView,context);
         holder.title.setText(title);
         holder.faixa_preco.setText(preco);
         holder.cidade.setText(cidade);
-        holder.data.setText(data);
     }
 
     @Override
@@ -50,10 +47,10 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.ViewHolder
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView title,cidade,faixa_preco,data;
-        ViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.item_evento_image);
             title = itemView.findViewById(R.id.item_evento_title);
@@ -62,4 +59,5 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.ViewHolder
             data=itemView.findViewById(R.id.item_evento_data);
         }
     }
+
 }

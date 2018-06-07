@@ -35,10 +35,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token,String tipo) {// Add custom implementation, as needed.
         if (tipo.equalsIgnoreCase("Artista")) {
-            Firebase.writeToken(SnapshotArtista.getArtista().id, token);
+            Firebase.writeToken(SnapshotArtista.getArtista().id, token,tipo);
         }
         else{
-            Firebase.writeToken(SnapshotContratante.getContratante().id, token);
+            Firebase.writeToken(SnapshotContratante.getContratante().id, token,tipo);
         }
     }
 

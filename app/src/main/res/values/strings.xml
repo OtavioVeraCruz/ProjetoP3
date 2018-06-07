@@ -101,7 +101,29 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="data">Data</string>
-    <string name="artistas_favoritos">Favoritos</string>
+    <string name="artistas_favoritos">Artistas Favoritos</string>
+    <string name="meus_eventos">Meus Eventos</string>
+    <string name="add_evento">Criar Evento</string>
+    <string name="registrar">Registrar-se</string>
+    <string name="criar_evento">Criar Evento</string>
+    <string name="perfil">Perfil</string>
+    <string name="detalhes_evento">Detalhes do Evento</string>
+    <string name="resultado">Resultado</string>
+    <string name="editar_evento">Editar Evento</string>
+    <string name="nome_evento">Nome do Evento</string>
+    <string name="descricao">Descrição</string>
+    <string name="contratante">Contratante</string>
+    <string name="intrumentos">Instrumentos Disponíveis</string>
+    <string name="imagens_do_local">Imagens do local</string>
+    <string name="Rock">Rock</string>
+    <string name="Pop">Pop</string>
+    <string name="Sertanejo">Sertanejo</string>
+    <string name="eletronica">Eletrônica</string>
+    <string name="pagode">Pagode</string>
+    <string name="Samba">Samba</string>
+    <string name="Brega">Brega</string>
+    <string name="Outros">Outros</string>
+    <string name="generos">Gêneros</string>
 
 
 </resources>

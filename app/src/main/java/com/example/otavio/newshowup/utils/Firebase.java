@@ -7,7 +7,8 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.example.otavio.newshowup.services.MyFirebaseInstanceIDService;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -25,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -106,7 +108,7 @@ public class Firebase {
     }
 
     @IgnoreExtraProperties
-    public static class Evento{
+    public static class Evento implements Serializable{
         public String id;
         public String id_contratante;
         public String nome;
@@ -238,6 +240,9 @@ public class Firebase {
         });
 
     }
+    public static void candidatarEvento(String id,final Runnable runnable){
+
+    }
     public static void getEventos(String genero,String preco,String cidade,String data){
         Query query=mDatabaseRef.child("Evento");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -307,35 +312,44 @@ public class Firebase {
         Log.d(TAG,"uploading started!");
         Uri uri=Uri.fromFile(new File(foto));
         Log.d(TAG,foto);
-        StorageReference storageReference;
+        final StorageReference storageReference;
         if (entity.equalsIgnoreCase("artista")){
             storageReference=mStorageRef.child("foto_artista/"+id+"/foto_artista");
         }
         else{
             storageReference=mStorageRef.child("foto_contratante/"+id+"/foto_contratante");
         }
-        UploadTask uploadTask=storageReference.putFile(uri);
+        final UploadTask uploadTask=storageReference.putFile(uri);
 
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                assert downloadUrl != null;
-                if (entity.equalsIgnoreCase("artista")){
-                    SnapshotArtista.getArtista().foto=downloadUrl.toString();
-                }
-                else{
-                    SnapshotContratante.getContratante().foto=downloadUrl.toString();
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw Objects.requireNonNull(task.getException());
                 }
 
-                onLoaded.run();
+                // Continue with the task to get the download URL
+                return storageReference.getDownloadUrl();
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG,"upload falhou!");
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    if (entity.equalsIgnoreCase("artista")){
+                        SnapshotArtista.getArtista().foto=downloadUri.toString();
+                    }
+                    else{
+                        SnapshotContratante.getContratante().foto=downloadUri.toString();
+                    }
+                    onLoaded.run();
+                } else {
+                    Log.d(TAG,"upload falhou!");
+                }
             }
         });
+
     }
     public static void uploadPhotos(String id, final ArrayList<String> fotos, final String entity,
                                     final Runnable onLoaded){
@@ -343,41 +357,32 @@ public class Firebase {
         final ArrayList<String> aux=new ArrayList<>();
         for (int i=0;i<fotos.size();i++) {
             Uri uri = Uri.fromFile(new File(fotos.get(i)));
-            StorageReference storageReference;
-           // if (entity.equalsIgnoreCase("artista")) {
-           //     storageReference = mStorageRef.child("foto_artista/" + id + "/foto_artista");
-           // }
-           // else if (entity.equalsIgnoreCase("evento")) {
-                String nome_foto=(fotos.get(i).split("/"))[6];
-                Log.d("Upload",nome_foto);
-                storageReference = mStorageRef.child("fotos_evento/" + id + "/"+nome_foto);
-           // }
-           // else {
-               // storageReference = mStorageRef.child("foto_contratante" + id + "foto_contratante");
-           // }
+            final StorageReference storageReference;
+            String nome_foto=(fotos.get(i).split("/"))[6];
+            Log.d("Upload",nome_foto);
+            storageReference = mStorageRef.child("fotos_evento/" + id + "/"+nome_foto);
             UploadTask uploadTask = storageReference.putFile(uri);
 
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    assert downloadUrl != null;
-                   /*if (entity.equalsIgnoreCase("artista")) {
-                        SnapshotArtista.getArtista().foto = downloadUrl.toString();
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw Objects.requireNonNull(task.getException());
                     }
-                    else if (entity.equalsIgnoreCase("evento")) {*/
 
-                    /*}
-                    else {
-                        SnapshotContratante.getContratante().foto=downloadUrl.toString();
-                    }*/
-                    aux.add(downloadUrl.toString());
-                    onLoaded.run();
+                    // Continue with the task to get the download URL
+                    return storageReference.getDownloadUrl();
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "upload falhou!");
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        aux.add(downloadUri.toString());
+                    } else {
+                        Log.d(TAG,"upload falhou!");
+                    }
                 }
             });
 

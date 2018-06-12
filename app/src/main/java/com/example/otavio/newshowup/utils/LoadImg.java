@@ -23,4 +23,18 @@ public class LoadImg {
             }
         });
     }
+    public static void loadSimpleImage(String url, ImageView imageView, Context context){
+        Picasso.with(context).load(url).placeholder(R.mipmap.mpb)
+                .error(R.mipmap.mpb).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                Log.d("Img","img carregada!");
+            }
+
+            @Override
+            public void onError() {
+                Log.d("Img","img não foi carregada!");
+            }
+        });
+    }
 }

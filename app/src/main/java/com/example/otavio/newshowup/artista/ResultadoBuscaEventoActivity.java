@@ -3,21 +3,17 @@ package com.example.otavio.newshowup.artista;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toolbar;
 
 import com.example.otavio.newshowup.R;
-import com.example.otavio.newshowup.evento.EventoAdapter;
+import com.example.otavio.newshowup.evento.EventoViewHolder;
 import com.example.otavio.newshowup.utils.Firebase;
+import com.example.otavio.newshowup.utils.LoadImg;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
+import com.google.firebase.database.Query;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +23,8 @@ public class ResultadoBuscaEventoActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)Toolbar toolbar;
     @BindView(R.id.recycler_search_event)RecyclerView recyclerView;
     String query;
-    ArrayList<Firebase.Evento>eventos;
-    EventoAdapter eventoAdapter;
+
+    private FirebaseRecyclerAdapter<Firebase.Evento, EventoViewHolder> mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,18 +32,37 @@ public class ResultadoBuscaEventoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Intent i = getIntent();
         query=i.getStringExtra("search");
-        recyclerView=findViewById(R.id.recycler_search_event);
+
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager lm=new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(lm);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),LinearLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        eventos=new ArrayList<>();
+        Query q=Firebase.mDatabaseRef.child("Evento");
 
-        eventoAdapter=new EventoAdapter(this,eventos);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new FirebaseRecyclerAdapter<Firebase.Evento, EventoViewHolder>(
+                Firebase.Evento.class, R.layout.item_evento, EventoViewHolder.class, q) {
+            @Override
+            protected void populateViewHolder(EventoViewHolder viewHolder, Firebase.Evento model, int position) {
+                viewHolder.cidade.setText(model.cidade);
+                viewHolder.data.setText(model.data);
+                viewHolder.data.setText(model.nome);
+                viewHolder.faixa_preco.setText(model.faixa_preco);
+                String desc=model.descricao;
+                viewHolder.data.setText(desc);
+                String url=model.fotos.get(0);
+                LoadImg.loadImage(url,viewHolder.imageView,ResultadoBuscaEventoActivity.this);
+            }
 
-        getEventos();
+            @Override
+            public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
+                super.onChildChanged(type, snapshot, index, oldIndex);
+                recyclerView.scrollToPosition(index);
+            }
+        };
+        recyclerView.setAdapter(mAdapter);
 
     }
 
@@ -58,25 +73,10 @@ public class ResultadoBuscaEventoActivity extends AppCompatActivity {
         intent.putExtra("search",query);
         startService(intent);*/
     }
-    public void getEventos(){
-        Firebase.mDatabaseRef.child("Evento").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data :dataSnapshot.getChildren()){
-                    Firebase.Evento evento=data.getValue(Firebase.Evento.class);
-                    assert evento != null;
-                    Log.d("REsult", "Evento "+evento.nome);
-                    eventos.add(evento);
-                }
-                recyclerView.setAdapter(eventoAdapter);
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
     }
 }

@@ -121,7 +121,5 @@ public class BuscarEventoActivity extends AppCompatActivity implements DatePicke
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
         editDate.setText(date);
-
-
     }
 }

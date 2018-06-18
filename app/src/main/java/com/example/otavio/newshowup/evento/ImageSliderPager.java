@@ -18,8 +18,8 @@ public class ImageSliderPager extends PagerAdapter
 {
     private Context context;
     private ArrayList<String>fotos;
-    private LayoutInflater layoutInflater;
-    public ImageSliderPager(@NonNull Context context, ArrayList<String>fotos) {
+
+    ImageSliderPager(@NonNull Context context, ArrayList<String> fotos) {
         this.context=context;
         this.fotos=fotos;
     }
@@ -37,8 +37,9 @@ public class ImageSliderPager extends PagerAdapter
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        layoutInflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=layoutInflater.inflate(R.layout.custom_image,null);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert layoutInflater != null;
+        View v= layoutInflater.inflate(R.layout.custom_image,container,false);
         ImageView imageView=v.findViewById(R.id.img_slider);
 
         LoadImg.loadSimpleImage(fotos.get(position),imageView,context);

@@ -68,7 +68,7 @@ public class ContratanteRegistrationActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String uid=preferences.getString("uid",null);
+        final String uid=Firebase.getmAuth().getUid();
 
         editTelefone.addTextChangedListener(new TextWatcher() {
             boolean editedFlag;

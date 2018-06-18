@@ -147,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else{
                                 Log.d(TAG, "Não é contratante!");
+
                             }
                         }
                     });
@@ -176,17 +177,16 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    /*if (SnapshotArtista.getId_artista()==null &&SnapshotContratante.getId_contratante()==null){
+                        constraintLayout.setAlpha(1f);
+                        progressBar.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        Intent intent = new Intent(LoginActivity.this, Register2Activity.class)
+                                .putExtra("profile_exists",1);
+                        startActivity(intent);
+                    }*/
 
-
-                } /*if (user!=null && SnapshotArtista.getId_artista()==null &&
-                        SnapshotContratante.getId_contratante()==null){
-                    constraintLayout.setAlpha(1f);
-                    progressBar.setVisibility(View.GONE);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Intent intent = new Intent(LoginActivity.this, Register2Activity.class)
-                            .putExtra("profile_exists",2);
-                    startActivity(intent);
-                }*/
+                }
                 else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -236,7 +236,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 }

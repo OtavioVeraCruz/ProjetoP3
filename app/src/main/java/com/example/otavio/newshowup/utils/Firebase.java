@@ -134,6 +134,10 @@ public class Firebase {
             this.data=data;
         }
 
+        public void setFotos(ArrayList<String> fotos){
+            this.fotos=fotos;
+        }
+
     }
 
 
@@ -240,7 +244,8 @@ public class Firebase {
         });
 
     }
-    public static void candidatarEvento(String id,final Runnable runnable){
+    public static void candidatarEvento(String id_evento,String id_artista,final Runnable runnable){
+
 
     }
     public static void getEventos(String genero,String preco,String cidade,String data){
@@ -354,7 +359,7 @@ public class Firebase {
     public static void uploadPhotos(String id, final ArrayList<String> fotos, final String entity,
                                     final Runnable onLoaded){
         Log.d(TAG,"uploading started!");
-        final ArrayList<String> aux=new ArrayList<>();
+
         for (int i=0;i<fotos.size();i++) {
             Uri uri = Uri.fromFile(new File(fotos.get(i)));
             final StorageReference storageReference;
@@ -363,14 +368,14 @@ public class Firebase {
             storageReference = mStorageRef.child("fotos_evento/" + id + "/"+nome_foto);
             UploadTask uploadTask = storageReference.putFile(uri);
 
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            final int finalI = i;
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
                         throw Objects.requireNonNull(task.getException());
                     }
-
                     // Continue with the task to get the download URL
                     return storageReference.getDownloadUrl();
                 }
@@ -379,15 +384,14 @@ public class Firebase {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        aux.add(downloadUri.toString());
+                        SnapshotContratante.getEvento().fotos.set(finalI,downloadUri.toString());
                     } else {
                         Log.d(TAG,"upload falhou!");
                     }
                 }
             });
-
         }
-        SnapshotContratante.getEvento().fotos=aux;
+
     }
 
     public static FirebaseAuth getmAuth(){

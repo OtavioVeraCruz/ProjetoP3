@@ -1,12 +1,14 @@
 package com.example.otavio.newshowup.contratante;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.otavio.newshowup.R;
@@ -19,7 +21,7 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
 
     private ArrayList<Firebase.Artista> artistas;
     private Context context;
-    public ArtistaAdapter(ArrayList<Firebase.Artista>artistas,Context context){
+    ArtistaAdapter(ArrayList<Firebase.Artista> artistas, Context context){
         this.artistas=artistas;
         this.context=context;
     }
@@ -31,7 +33,7 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArtistaAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ArtistaAdapter.ViewHolder holder, int position) {
         String url=artistas.get(position).foto;
         String title=artistas.get(position).nome;
         String preco=artistas.get(position).dadosArtista.faixa_preco;
@@ -40,23 +42,32 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
         holder.title.setText(title);
         holder.faixa_preco.setText(preco);
         holder.cidade.setText(cidade);
+        holder.linear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context. startActivity(new Intent(context,DetalhesArtistaActivity.class).
+                        putExtra("artista", artistas.get(holder.getAdapterPosition())));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return artistas.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView title,cidade,faixa_preco,data;
-        public ViewHolder(View itemView) {
+        LinearLayout linear;
+        ViewHolder(View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.item_evento_image);
             title = itemView.findViewById(R.id.item_evento_title);
             cidade=itemView.findViewById(R.id.item_evento_cidade);
             faixa_preco=itemView.findViewById(R.id.item_evento_preco);
             data=itemView.findViewById(R.id.item_evento_data);
+            linear=itemView.findViewById(R.id.item_evento);
         }
     }
 

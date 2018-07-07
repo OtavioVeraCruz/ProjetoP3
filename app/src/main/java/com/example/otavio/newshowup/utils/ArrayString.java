@@ -4,7 +4,7 @@ public class ArrayString {
 
     public static String [] generos={"Gênero musical","Brega","Eletrônica","Forró","Funk","Gospel","Indie","Jazz","Pagode","Pop","Rock","Samba","Sertanejo"};
     public static  String [] faixas_preco={"Faixa de preço por show","R$ 80,00 - 150,00","R$ 150,00 - 250,00","R$ 250,00 - 400,00","R$ 400,00 - 600,00","Outros"};
-    public static String [] cidades={"Abreu e Lima","Afogados da Ingazeira","Afrânio","Agrestina","Água Preta","Águas Belas","Alagoinha",    "Aliança",
+    public static String [] cidades={"Escolha a cidade","Abreu e Lima","Afogados da Ingazeira","Afrânio","Agrestina","Água Preta","Águas Belas","Alagoinha",    "Aliança",
             "Altinho","Amaraji","Angelim","Araçoiaba","Araripina","Arcoverde","B'arra de Guabiraba","Barreiros","Belém de Maria",
             "Belém de São Francisco","Belo Jardim","Betânia","Bezerros","Bodocó","Bom Conselho","Bom Jardim","Bonito",
             "Brejão","Brejinho","Brejo da Madre de Deus","Buenos Aires","Buíque","Cabo de Santo Agostinho","Cabrobó",         "Cachoeirinha",

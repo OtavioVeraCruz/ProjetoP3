@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".contratante.DetalhesArtistaActivity"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/text_canalyoutube"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/canal_no_youtube"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_contato"
+        app:layout_constraintVertical_bias="0.04"
+        />
+
+    <TextView
+        android:id="@+id/text_contato"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/contato_artista"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.025"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_genero" />
+
+    <ImageView
+        android:id="@+id/image_artista_detalhes"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:contentDescription="@string/foto_do_artista"/>
+
+    <TextView
+        android:id="@+id/text_nome_artista"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/nome_artista"
+        android:textColor="@color/mdtp_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_artista_detalhes" />
+
+    <TextView
+        android:id="@+id/text_genero"
+        android:layout_width="wrap_content"
+        android:layout_height="23dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/g_nero_musical"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_nome_artista" />
+
+    <Button
+        android:id="@+id/btn_youtube_playlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="156dp"
+        android:background="@color/mdtp_accent_color"
+        android:text="@string/visualizar"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintStart_toEndOf="@+id/text_canalyoutube"
+        app:layout_constraintTop_toBottomOf="@+id/image_artista_detalhes" />
+
+    <TextView
+        android:id="@+id/text_faixa_preco_artista"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/faixa_de_pre_o_por_show"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_canalyoutube"
+        app:layout_constraintVertical_bias="0.254" />
+
+    <TextView
+        android:id="@+id/text_cidade_artista"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/cidade"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_faixa_preco_artista"
+        app:layout_constraintVertical_bias="0.529" />
+</android.support.constraint.ConstraintLayout>

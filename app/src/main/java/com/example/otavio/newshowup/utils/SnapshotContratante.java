@@ -2,9 +2,12 @@ package com.example.otavio.newshowup.utils;
 
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 public class SnapshotContratante {
     public static Firebase.Contratante contratante;
     public static String id_contratante;
+    public static ArrayList<Firebase.Artista> artistas=new ArrayList<>();
 
     public static Firebase.Evento getEvento() {
         return evento;

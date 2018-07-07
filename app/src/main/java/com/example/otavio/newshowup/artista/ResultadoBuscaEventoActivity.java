@@ -69,7 +69,7 @@ public class ResultadoBuscaEventoActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        /*Intent intent=new Intent(this, SearchEventService.class);
+        /*Intent intent=new Intent(this, SearchArtistaService.class);
         intent.putExtra("search",query);
         startService(intent);*/
     }

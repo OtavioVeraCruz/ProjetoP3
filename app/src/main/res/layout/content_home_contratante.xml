@@ -13,7 +13,7 @@
         android:id="@+id/recycler_contratatnte"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="150dp" />
+        android:layout_marginTop="170dp" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
@@ -150,13 +150,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_add_black_24dp" />
+
     </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -167,189 +168,86 @@
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
-            android:layout_height="110dp"
+            android:layout_height="130dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
-                <LinearLayout
+
+                <TextView
+                    android:id="@+id/genero_rock"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_horizontal">
+                    android:layout_height="70dp"
+                    android:drawableTop="@mipmap/rock"
+                    android:textColor="@color/mdtp_white"
+                    android:text="@string/Rock"
+                    android:layout_margin="5dp"
+                    android:gravity="top"/>
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Rock"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/genero_pop"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:gravity="top"
+                    android:drawableTop="@mipmap/pop"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/Pop"
+                    android:textColor="@color/mdtp_white" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                <TextView
+                    android:id="@+id/genero_sertanejo"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:gravity="top"
+                    android:text="@string/Sertanejo"
+                    android:drawableTop="@mipmap/sertanejo"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/mdtp_white" />
+
+                <TextView
+                    android:id="@+id/genero_eletronica"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:gravity="top"
+                    android:text="@string/eletronica"
+                    android:drawableTop="@mipmap/eletronica"
+                    android:textColor="@color/mdtp_white"
+                    android:layout_margin="10dp"/>
+
+                <TextView
+                    android:id="@+id/genero_pagode"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="1dp"
+                    android:drawableTop="@mipmap/pagode"
+                    android:gravity="top"
+                    android:text="@string/pagode"
+                    android:textColor="@color/mdtp_white" />
+
+                <TextView
+                    android:id="@+id/genero_samba"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="10dp"
+                    android:drawableTop="@mipmap/samba"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
+                    android:text="@string/Samba"
+                    android:textColor="@color/mdtp_white" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Pop"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                <TextView
+                    android:id="@+id/genero_brega"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="10dp"
+                    android:drawableTop="@mipmap/brega"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
+                    android:text="@string/Brega"
+                    android:textColor="@color/mdtp_white"/>
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Sertanejo"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/eletronica"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/pagode"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Samba"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="10dp">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/todo"
-                        android:src="@mipmap/ic_profile_image_round" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Brega"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/ic_more_white"
-                        android:contentDescription="@string/todo" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Outros"
-                        android:textColor="@color/mdtp_white" />
-                </LinearLayout>
             </LinearLayout>
 
          </HorizontalScrollView>

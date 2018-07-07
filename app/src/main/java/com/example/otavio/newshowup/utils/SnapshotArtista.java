@@ -1,15 +1,13 @@
 package com.example.otavio.newshowup.utils;
 
-import android.content.SharedPreferences;
+import java.util.HashMap;
 
 public class SnapshotArtista {
 
     public static Firebase.Artista artista;
     public static String id_artista;
-    private static SharedPreferences sharedPreferences;
-    private static SharedPreferences.Editor editor;
     private static final SnapshotArtista snapshot = new SnapshotArtista();
-
+    public static HashMap<String,Firebase.Candidatura> candidaturas=new HashMap<>();
     private SnapshotArtista() {}
 
     public static SnapshotArtista getInstance() {
@@ -32,9 +30,18 @@ public class SnapshotArtista {
         SnapshotArtista.id_artista = id_artista;
     }
 
+    public static HashMap<String,Firebase.Candidatura> getCandidaturas() {
+        return candidaturas;
+    }
+
+    public static void setCandidaturas(HashMap<String,Firebase.Candidatura> candidaturas) {
+        SnapshotArtista.candidaturas = candidaturas;
+    }
+
     public static void reset(){
         artista=null;
         id_artista=null;
+        candidaturas=null;
 
     }
 }

@@ -7,9 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.otavio.newshowup.R;
-import com.example.otavio.newshowup.evento.DetalhesEventoActivity;
 import com.example.otavio.newshowup.evento.EventoViewHolder;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.LoadImg;
@@ -63,8 +63,29 @@ public class MeusEventosActivity extends AppCompatActivity {
                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startActivity(new Intent(MeusEventosActivity.this, DetalhesEventoActivity.class)
+                            startActivity(new Intent(MeusEventosActivity.this, EditarEventoActivity.class)
                                     .putExtra("id_evento", model.id).putExtra("evento", model));
+                        }
+                    });
+
+                    viewHolder.imageViewDelete.setVisibility(View.VISIBLE);
+                    viewHolder.imageViewDelete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                        Firebase.removeEvento(model.id, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (Firebase.getIsEventRemoved()){
+                                    Toast.makeText(MeusEventosActivity.this,"Evento removido!"
+                                            ,Toast.LENGTH_LONG).show();
+                                    Firebase.setIsEventRemoved(false);
+                                }
+                                else{
+                                    Toast.makeText(MeusEventosActivity.this,"Evento não pode ser removido!"
+                                            ,Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                         }
                     });
                 }
@@ -81,7 +102,6 @@ public class MeusEventosActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==android.R.id.home){
@@ -94,6 +114,9 @@ public class MeusEventosActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdapter.cleanup();
+        if (mAdapter!=null) {
+            mAdapter.cleanup();
+        }
+        finish();
     }
 }

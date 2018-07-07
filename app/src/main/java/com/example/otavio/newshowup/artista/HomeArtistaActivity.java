@@ -27,6 +27,7 @@ import com.example.otavio.newshowup.evento.EventoViewHolder;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.LoadImg;
 import com.example.otavio.newshowup.utils.SnapshotArtista;
+import com.example.otavio.newshowup.utils.SnapshotEvento;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +72,7 @@ public class HomeArtistaActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        Query q=Firebase.mDatabaseRef.child("Evento").limitToLast(50);
+        Query q=Firebase.mDatabaseRef.child("Evento");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(false);
@@ -92,11 +93,12 @@ public class HomeArtistaActivity extends AppCompatActivity
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        SnapshotEvento.setEvento(model);
                         startActivity(new Intent(HomeArtistaActivity.this,DetalhesEventoActivity.class)
-                                .putExtra("id_evento",model.id).putExtra("evento",model));
+                            .putExtra("evento",model));
+
                     }
                 });
-
             }
 
             @Override
@@ -106,7 +108,6 @@ public class HomeArtistaActivity extends AppCompatActivity
             }
         };
         recyclerView.setAdapter(mAdapter);
-
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

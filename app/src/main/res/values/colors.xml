@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#272727</color>
     <color name="colorAccent">#cdced0</color>
     <color name="mdtp_transparent">#FFF</color>
+    <color name="red">#fa2a32</color>
 </resources>

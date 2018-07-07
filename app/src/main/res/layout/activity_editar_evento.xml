@@ -4,6 +4,196 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".contratante.EditarEventoActivity">
+    tools:context=".contratante.CriarEventoActivity"
+    android:theme="@style/AppTheme">
+
+    <ScrollView
+        android:id="@+id/scrollViewEditEvent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/imagens_do_local"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/mdtp_dark_gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/image_add_new"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/image_add_new1"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/todo"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/image_add_new2"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/todo"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/image_add_new3"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/todo"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_edit_event"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintVertical_bias="0.226">
+
+                <EditText
+                    android:id="@+id/edit_nome_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:ems="10"
+                    android:hint="@string/nome_evento"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/edit_descricao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:ems="10"
+                    android:hint="@string/descricao"
+                    android:inputType="textMultiLine" />
+
+                <EditText
+                    android:id="@+id/edit_instrumentos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:ems="10"
+                    android:hint="@string/intrumentos"
+                    android:inputType="textMultiLine" />
+
+                <Spinner
+                    android:id="@+id/spinner_faixa_preco"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/auto_complete_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="@string/cidade" />
+
+                <EditText
+                    android:id="@+id/edit_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="@string/data" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_edit_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/mdtp_accent_color"
+                android:text="@string/editar_evento"
+                android:textColor="@color/mdtp_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressbarEditEvent"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/scrollViewEditEvent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

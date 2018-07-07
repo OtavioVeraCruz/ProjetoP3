@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,19 +23,22 @@ import android.widget.TextView;
 
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.auth.LoginActivity;
-import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.LoadImg;
 import com.example.otavio.newshowup.utils.SnapshotContratante;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
+
+import static com.example.otavio.newshowup.utils.Firebase.Artista;
+import static com.example.otavio.newshowup.utils.Firebase.logout;
+import static com.example.otavio.newshowup.utils.Firebase.mDatabaseRef;
 
 public class HomeContratanteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,11 +51,15 @@ public class HomeContratanteActivity extends AppCompatActivity
     @BindView(R.id.layoutFabAddEvents)LinearLayout linearLayout_add;
     @BindView(R.id.layoutFabEvents)LinearLayout linearLayout_events;
     @BindView(R.id.recycler_contratatnte)RecyclerView recyclerView;
+    @BindViews({R.id.genero_rock,R.id.genero_pop,R.id.genero_sertanejo,R.id.genero_samba,
+    R.id.genero_pagode,R.id.genero_eletronica,R.id.genero_brega})List<TextView> generos;
+    String[]genders={"Rock","Pop","Sertanejo","Samba","Pagode","Eletrônica","Brega"};
     private static boolean fab_status=false;
     ImageView img_profile;
     TextView nome_contratante;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseRecyclerAdapter<Artista,ArtistaViewHolder>mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +68,36 @@ public class HomeContratanteActivity extends AppCompatActivity
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final ArrayList<Firebase.Artista>artistas=new ArrayList<>();
-        Firebase.mDatabaseRef.child("Artista").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data:dataSnapshot.getChildren())
-                artistas.add(data.getValue(Firebase.Artista.class));
-            }
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        Query q= mDatabaseRef.child("Artista").limitToLast(100);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+
+        mAdapter=new FirebaseRecyclerAdapter<Artista, ArtistaViewHolder>(Artista.class,R.layout.item_artista,
+                ArtistaViewHolder.class,q) {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            protected void populateViewHolder(ArtistaViewHolder viewHolder, final Artista model, int position) {
+                viewHolder.linear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(HomeContratanteActivity.this,
+                                DetalhesArtistaActivity.class).putExtra("artista", model));
+                    }
+                });
+                viewHolder.title.setText(model.nome);
+                viewHolder.cidade.setText(model.dadosArtista.cidade);
+                viewHolder.faixa_preco.setText(model.dadosArtista.faixa_preco);
+                LoadImg.loadImage(model.foto,viewHolder.imageView,HomeContratanteActivity.this);
 
             }
-        });
-        ArtistaAdapter adapter=new ArtistaAdapter(artistas,this);
-        recyclerView.setAdapter(adapter);
+        };
+        recyclerView.setAdapter(mAdapter);
 
         DrawerLayout drawer =findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -155,6 +178,18 @@ public class HomeContratanteActivity extends AppCompatActivity
             }
         });
 
+        for (int i=0;i<generos.size();i++){
+            final int finalI = i;
+            generos.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(HomeContratanteActivity.this,ResultadoBuscaContratanteActivity.class);
+                    intent.putExtra("genero",genders[finalI]);
+                    intent.putExtra("query","genero");
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -185,6 +220,9 @@ public class HomeContratanteActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mAdapter!=null) {
+            mAdapter.cleanup();
+        }
         finish();
     }
 
@@ -219,14 +257,14 @@ public class HomeContratanteActivity extends AppCompatActivity
         }else if (id == R.id.edit_perfil_contratante) {
             startActivity(new Intent(HomeContratanteActivity.this,PerfilContratanteActivity.class));
 
-        }else if (id == R.id.nav_favorites) {
+        }/*else if (id == R.id.nav_favorites) {
             startActivity(new Intent(HomeContratanteActivity.this,ArtistasFavoritosActivity.class));
 
-        }
+        }*/
 
         else if (id == R.id.nav_logout) {
             finish();
-            Firebase.logout();
+            logout();
             SnapshotContratante.reset();
 
         }

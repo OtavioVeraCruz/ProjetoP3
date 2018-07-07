@@ -28,6 +28,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class Firebase {
@@ -38,10 +39,10 @@ public class Firebase {
     private static FirebaseStorage mStorage=FirebaseStorage.getInstance();
     private static StorageReference mStorageRef=mStorage.getReference();
     private static String TAG="Firebase";
-
-
+    private static boolean isEventRemoved;
+    private static boolean isEventEdited;
     @IgnoreExtraProperties
-    public static class Artista{
+    public static class Artista implements Serializable{
         public String id;
         public String nome;
         public String foto;
@@ -49,10 +50,11 @@ public class Firebase {
         String token;
         public String uid;
         public String youtube_channel;
+        public ArrayList<String>candidaturas;
 
         public Artista(){}
         public Artista(String id,String nome,String foto,DadosArtista dadosArtista,String token,
-                       String uid,String youtube_channel){
+                       String uid,String youtube_channel,ArrayList<String>candidaturas){
             this.id=id;
             this.nome=nome;
             this.foto=foto;
@@ -60,11 +62,12 @@ public class Firebase {
             this.token=token;
             this.uid=uid;
             this.youtube_channel=youtube_channel;
+            this.candidaturas=candidaturas;
         }
 
     }
     @IgnoreExtraProperties
-    public static class DadosArtista{
+    public static class DadosArtista implements Serializable{
         public String telefone;
         public String cidade;
         public String estado;
@@ -118,11 +121,12 @@ public class Firebase {
         public ArrayList<String> fotos;
         public String cidade;
         public String data;
+        public ArrayList<String>candidatos;
 
         public Evento() {
         }
         public Evento(String id, String id_contratante, String nome,String descricao,ArrayList<String> instrumentos,
-                      String faixa_preco,ArrayList<String> fotos,String cidade,String data) {
+                      String faixa_preco,ArrayList<String> fotos,String cidade,String data,ArrayList<String>candidatos) {
             this.id = id;
             this.id_contratante = id_contratante;
             this.nome = nome;
@@ -132,6 +136,8 @@ public class Firebase {
             this.fotos = fotos;
             this.cidade=cidade;
             this.data=data;
+            this.candidatos=candidatos;
+
         }
 
         public void setFotos(ArrayList<String> fotos){
@@ -140,6 +146,18 @@ public class Firebase {
 
     }
 
+    @IgnoreExtraProperties
+    public static class Candidatura{
+        public String id;
+        public String id_artista;
+        public String id_evento;
+        public Candidatura(){}
+        public Candidatura(String id,String id_artista,String id_evento){
+            this.id=id;
+            this.id_artista=id_artista;
+            this.id_evento=id_evento;
+        }
+    }
 
     public static void recover_artista(String artista_id, final Runnable runnable){
         TaskCompletionSource<Boolean> getArtistaSource = new TaskCompletionSource<>();
@@ -151,7 +169,7 @@ public class Firebase {
             @Override
             public void onSuccess(Void aVoid) {
                 if (SnapshotArtista.getArtista()!=null){
-                    runnable.run();
+                    getCandidaturas(SnapshotArtista.getArtista().id,runnable);
                 }
                 else {
                     runnable.run();
@@ -177,11 +195,11 @@ public class Firebase {
             }
         });
     }
-    public static void getArtista(final String id, final TaskCompletionSource<Boolean> dbSource){
+    private static void getArtista(final String id, final TaskCompletionSource<Boolean> dbSource){
         Query query = mDatabaseRef.child("Artista");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Artista artista = data.getValue(Artista.class);
                     assert artista != null;
@@ -210,7 +228,7 @@ public class Firebase {
         });
 
     }
-    public static void getContratante(final String id, final TaskCompletionSource<Boolean> dbSource){
+    private static void getContratante(final String id, final TaskCompletionSource<Boolean> dbSource){
         Query query = mDatabaseRef.child("Contratante");
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -244,8 +262,79 @@ public class Firebase {
         });
 
     }
+    private static void getCandidaturas(final String id_artista, final Runnable runnable){
+        Query query=mDatabaseRef.child("Candidatura");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data:dataSnapshot.getChildren()){
+                    Candidatura candidatura=data.getValue(Candidatura.class);
+                    assert candidatura != null;
+                    if (candidatura.id_artista.equals(id_artista)){
+                        SnapshotArtista.candidaturas.put(candidatura.id,candidatura);
+                    }
+                }
+                runnable.run();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public static void candidatarEvento(String id_evento,String id_artista,final Runnable runnable){
 
+        if(SnapshotEvento.getEvento().candidatos==null) {
+            SnapshotEvento.getEvento().candidatos = new ArrayList<>();
+            insertCandidatura(id_artista,id_evento);
+            runnable.run();
+        }
+
+        else{
+            insertCandidatura(id_artista,id_evento);
+            runnable.run();
+        }
+    }
+    public static void insertCandidatura(String id_artista,String id_evento){
+        String id=mDatabaseRef.child("Candidatura").push().getKey();
+        Candidatura candidatura=new Candidatura(id,id_artista,id_evento);
+        assert id != null;
+        mDatabaseRef.child("Candidatura").child(id).setValue(candidatura);
+        SnapshotEvento.getEvento().candidatos.add(id_artista);
+
+        mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
+                SnapshotEvento.getEvento().candidatos);
+
+        if (SnapshotArtista.getArtista().candidaturas==null){
+            SnapshotArtista.getArtista().candidaturas=new ArrayList<>();
+        }
+
+        SnapshotArtista.getArtista().candidaturas.add(id);
+        mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(
+                SnapshotArtista.getArtista().candidaturas);
+    }
+    public static void removeCandidatura(String id_evento, HashMap<String,Candidatura> candidaturas, String id_artista,
+                                         Runnable runnable){
+
+        for (int i=0;i<SnapshotEvento.getEvento().candidatos.size();i++){
+            String aux_artistas=SnapshotEvento.getEvento().candidatos.get(i);
+            if (aux_artistas.equals(id_artista)){
+                SnapshotEvento.getEvento().candidatos.remove(i);
+                mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
+                        SnapshotEvento.getEvento().candidatos);
+            }
+        }
+        for (String candidatura:candidaturas.keySet()){
+            Candidatura aux=SnapshotArtista.getCandidaturas().get(candidatura);
+            if (aux.id_evento.equals(id_evento)){
+                SnapshotArtista.candidaturas.remove(aux.id);
+                mDatabaseRef.child("Candidatura").child(aux.id).setValue(null);
+            }
+        }
+        mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(SnapshotArtista.candidaturas);
+
+        runnable.run();
 
     }
     public static void getEventos(String genero,String preco,String cidade,String data){
@@ -266,7 +355,7 @@ public class Firebase {
     public static void insertArtist(String nome, String foto, DadosArtista dadosArtista,String uid,
                                     final Runnable onLoad){
         String id = mDatabaseRef.child("Artista").push().getKey();
-        final Artista artista=new Artista(id,nome,null,dadosArtista,null,uid,null);
+        final Artista artista=new Artista(id,nome,null,dadosArtista,null,uid,null,null);
         SnapshotArtista.setArtista(artista);
         uploadPhoto(id, foto, "artista", new Runnable() {
             @Override
@@ -301,7 +390,7 @@ public class Firebase {
 
        final String id_evento = mDatabaseRef.child("Evento").push().getKey();
        final Evento evento=new Evento(id_evento,id_contratante,nome,descricao,instrumentos,faixa_preco,
-               fotos,cidade,data);
+               fotos,cidade,data,null);
 
        SnapshotContratante.setEvento(evento);
        uploadPhotos(id_evento,fotos,"evento", new Runnable() {
@@ -313,6 +402,63 @@ public class Firebase {
        });
        onLoad.run();
     }
+    public static void updateEvento(final Evento evento, final Runnable onLoad){
+
+        uploadPhotos(evento.id, evento.fotos, "Evento", new Runnable() {
+            @Override
+            public void run() {
+                mDatabaseRef.child("Evento").child(evento.id).setValue(evento).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Log.d("Evento editado","com sucesso!");
+                            onLoad.run();
+                        }
+                        else {
+                            Log.d("Evento editado","sem sucesso!");
+                            onLoad.run();
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
+    public static void removeEvento(String id, final Runnable onLoad){
+
+      if ( mDatabaseRef.child("Evento").child(id).setValue(null).isSuccessful()) {
+          SnapshotContratante.setEvento(null);
+          mStorageRef.child("fotos_evento").child(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+              @Override
+              public void onComplete(@NonNull Task<Void> task) {
+                  setIsEventRemoved(true);
+                  onLoad.run();
+
+              }
+          });
+      }
+      else {
+          setIsEventRemoved(false);
+          onLoad.run();
+      }
+
+    }
+    public static void setIsEventRemoved(boolean removed){
+        isEventRemoved=removed;
+    }
+    public static boolean getIsEventRemoved(){
+        return isEventRemoved;
+    }
+
+    public static void setIsEventEdited(boolean edited){
+        isEventEdited=edited;
+    }
+    public static boolean getIsEventEdited(){
+        return isEventEdited;
+    }
+
+    //Upload imgs
     public static void uploadPhoto(String id, String foto, final String entity, final Runnable onLoaded){
         Log.d(TAG,"uploading started!");
         Uri uri=Uri.fromFile(new File(foto));
@@ -359,38 +505,49 @@ public class Firebase {
     public static void uploadPhotos(String id, final ArrayList<String> fotos, final String entity,
                                     final Runnable onLoaded){
         Log.d(TAG,"uploading started!");
-
+        final ArrayList<String >aux=new ArrayList<>();
         for (int i=0;i<fotos.size();i++) {
-            Uri uri = Uri.fromFile(new File(fotos.get(i)));
-            final StorageReference storageReference;
-            String nome_foto=(fotos.get(i).split("/"))[6];
-            Log.d("Upload",nome_foto);
-            storageReference = mStorageRef.child("fotos_evento/" + id + "/"+nome_foto);
-            UploadTask uploadTask = storageReference.putFile(uri);
+            if(!fotos.get(i).contains("firebasestorage")) {
+                Uri uri = Uri.fromFile(new File(fotos.get(i)));
+                final StorageReference storageReference;
+                String nome_foto = (fotos.get(i).split("/"))[6];
+                Log.d("Upload", nome_foto);
+                storageReference = mStorageRef.child("fotos_evento/" + id + "/" + nome_foto);
+                UploadTask uploadTask = storageReference.putFile(uri);
 
-            final int finalI = i;
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw Objects.requireNonNull(task.getException());
+                final int finalI = i;
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw Objects.requireNonNull(task.getException());
+                        }
+                        // Continue with the task to get the download URL
+                        return storageReference.getDownloadUrl();
                     }
-                    // Continue with the task to get the download URL
-                    return storageReference.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        SnapshotContratante.getEvento().fotos.set(finalI,downloadUri.toString());
-                    } else {
-                        Log.d(TAG,"upload falhou!");
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            aux.add(downloadUri.toString());
+                        } else {
+                            Log.d(TAG, "upload falhou!");
+                        }
+                        if ((aux.size() - 1) == finalI) {
+                            SnapshotContratante.getEvento().fotos.addAll(aux);
+                            onLoaded.run();
+                        }
                     }
-                }
-            });
+                });
+                Log.d("For", "qtd " + i);
+            }
+            else{
+                Log.d("Image", "Img permanece a mesma ");
+            }
         }
+
 
     }
 

@@ -43,8 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d("Register", "onAuthStateChanged:signed_in:" + user.getUid());
                     finish();
-                    Intent intent = new Intent(RegisterActivity.this, Register2Activity.class).
-                            putExtra("profile_exists",1);
+                    Intent intent = new Intent(RegisterActivity.this, Register2Activity.class);
                     startActivity(intent);
                 } else {
                     // User is signed out
@@ -111,4 +110,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }

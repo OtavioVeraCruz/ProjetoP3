@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.utils.ArrayString;
+import com.example.otavio.newshowup.utils.BitMapUtils;
 import com.example.otavio.newshowup.utils.CircleTransform;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.SnapshotContratante;
@@ -70,6 +71,10 @@ public class CriarEventoActivity extends AppCompatActivity  implements DatePicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_criar_evento);
         ButterKnife.bind(this);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         imgs_adress=new ArrayList<>();
 
         final String[] faixa_preco = new String[1];
@@ -161,14 +166,14 @@ public class CriarEventoActivity extends AppCompatActivity  implements DatePicke
                 orientation = exif.getAttributeInt(android.support.media.ExifInterface.TAG_ORIENTATION, android.support.media.ExifInterface.ORIENTATION_NORMAL);
             switch (orientation) {
                 case android.support.media.ExifInterface.ORIENTATION_ROTATE_90:
-                    bitmap = rotateBitmap(bitmap, 90);
+                    bitmap = BitMapUtils.rotateBitmap(bitmap, 90);
                     break;
                 case android.support.media.ExifInterface.ORIENTATION_ROTATE_180:
-                    bitmap = rotateBitmap(bitmap, 180);
+                    bitmap = BitMapUtils.rotateBitmap(bitmap, 180);
                     break;
 
                 case android.support.media.ExifInterface.ORIENTATION_ROTATE_270:
-                    bitmap = rotateBitmap(bitmap, 270);
+                    bitmap = BitMapUtils.rotateBitmap(bitmap, 270);
                     break;
             }
 
@@ -235,7 +240,8 @@ public class CriarEventoActivity extends AppCompatActivity  implements DatePicke
                             startActivityForResult(intent,RESULT_TAKE_PICTURE );
                         } else if (options[item].equals("Galeria")) {
                             dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media
+                                    .EXTERNAL_CONTENT_URI);
                             startActivityForResult(pickPhoto, RESULT_PICK_PICTURE);
                         } else if (options[item].equals("Cancelar")) {
                             dialog.dismiss();
@@ -250,11 +256,13 @@ public class CriarEventoActivity extends AppCompatActivity  implements DatePicke
             e.printStackTrace();
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
 
-    public static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return super.onOptionsItemSelected(item);
     }
 
     private int updatePos(){

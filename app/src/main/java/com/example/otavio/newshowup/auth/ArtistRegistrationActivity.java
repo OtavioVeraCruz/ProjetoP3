@@ -3,20 +3,18 @@ package com.example.otavio.newshowup.auth;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -71,8 +69,6 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
         spinner_genero.setAdapter(adapterGenero);
         ArrayAdapter<String> adapterPreco=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.faixas_preco);
         spinner_faixa_preco.setAdapter(adapterPreco);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String uid=preferences.getString("uid",null);
 
         final String[] genero = new String[1];
         final String[] faixa_preco = new String[1];
@@ -113,7 +109,8 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Firebase.DadosArtista dadosArtista=new Firebase.DadosArtista(editTelefone.getText().toString(),
                             editCidade.getText().toString(),editEstado.getText().toString(),genero[0],faixa_preco[0]);
-                    Firebase.insertArtist(editNome.getText().toString(),picturePath,dadosArtista,uid,new Runnable(){
+                    Firebase.insertArtist(editNome.getText().toString(),picturePath,dadosArtista,Firebase.getmAuth().
+                            getCurrentUser().getUid(),new Runnable(){
                         @Override
                         public void run() {
                             Intent i=new Intent(ArtistRegistrationActivity.this, HomeArtistaActivity.class);

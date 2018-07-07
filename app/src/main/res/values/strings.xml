@@ -129,6 +129,13 @@
     <string name="data">Data</string>
     <string name="faixa_de_pre_o">Faixa de Preço:</string>
     <string name="candidatar_se">Candidatar-se</string>
+    <string name="canal_no_youtube">Playlist Youtube:</string>
+    <string name="visualizar">Visualizar</string>
+    <string name="g_nero_musical">Gênero Musical:</string>
+    <string name="nome_artista">Nome:</string>
+    <string name="contato_artista">Contato:</string>
+    <string name="foto_do_artista">Foto do artista</string>
+    <string name="faixa_de_pre_o_por_show">Faixa de Preço por show:</string>
 
 
 </resources>

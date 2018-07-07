@@ -2,49 +2,41 @@ package com.example.otavio.newshowup.youtube;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.webkit.WebView;
 
 import com.example.otavio.newshowup.R;
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
 
-public class YoutubeActivity extends YouTubeBaseActivity {
+public class YoutubeActivity extends AppCompatActivity {
 
-    YouTubePlayerView mYoutubePlayerView;
-    YouTubePlayer.OnInitializedListener mListener;
-    YouTubePlayer mYouTubePlayer;
-    String channel;
+    String playlist;
+    WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
-        mYoutubePlayerView=findViewById(R.id.youtube_player_view);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         Intent i=getIntent();
-        channel=i.getStringExtra("channel");
-        mListener = new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                Log.d("Youtube","Entrou!");
-                youTubePlayer.loadVideo(channel);
-                mYouTubePlayer=youTubePlayer;
-            }
+        playlist=i.getStringExtra("playlist");
 
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        webView=findViewById(R.id.webview);
 
-            }
-        };
-        mYoutubePlayerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mYoutubePlayerView.initialize(YoutubeConfiguration.getApiKey(),mListener);
-            }
-        });
+        webView.loadUrl(playlist);
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

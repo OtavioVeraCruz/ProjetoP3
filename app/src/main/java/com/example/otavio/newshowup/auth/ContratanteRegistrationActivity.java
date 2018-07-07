@@ -3,7 +3,6 @@ package com.example.otavio.newshowup.auth;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -66,9 +64,6 @@ public class ContratanteRegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contratante_registration);
         ButterKnife.bind(this);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String uid=Firebase.getmAuth().getUid();
 
         editTelefone.addTextChangedListener(new TextWatcher() {
             boolean editedFlag;
@@ -134,11 +129,13 @@ public class ContratanteRegistrationActivity extends AppCompatActivity {
                     getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                    Firebase.insertContratante(editNome.getText().toString(), picturePath, uid, editTelefone.getText().toString(),
+                    Firebase.insertContratante(editNome.getText().toString(), picturePath, Firebase.getmAuth()
+                                    .getCurrentUser().getUid(), editTelefone.getText().toString(),
                             completeEstado.getText().toString(), completeCidade.getText().toString(), new Runnable() {
                                 @Override
                                 public void run() {
-                                    startActivity(new Intent(ContratanteRegistrationActivity.this, HomeContratanteActivity.class));
+                                    startActivity(new Intent(ContratanteRegistrationActivity.this,
+                                            HomeContratanteActivity.class));
                                 }
                             });
 

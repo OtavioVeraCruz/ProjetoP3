@@ -3,18 +3,21 @@ package com.example.otavio.newshowup.evento;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.otavio.newshowup.R;
 import com.example.otavio.newshowup.utils.Firebase;
+import com.example.otavio.newshowup.utils.SnapshotArtista;
+import com.example.otavio.newshowup.utils.SnapshotEvento;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +32,7 @@ public class DetalhesEventoActivity extends AppCompatActivity {
     @BindView(R.id.event_price)TextView price;
     @BindView(R.id.btn_candidatar_evento)Button candidatar;
     @BindView(R.id.progressBarDetails)ProgressBar progressBar;
-    @BindView(R.id.progressbarHolderEventDetails)ConstraintLayout progressBarHolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +44,10 @@ public class DetalhesEventoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-
         Intent intent=getIntent();
-        String id_evento=intent.getStringExtra("id_contratante");
         final ImageSliderPager sliderPager;
 
-        progressBarHolder.setAlpha(0.4f);
+        viewPager.setAlpha(0.4f);
         progressBar.setVisibility(View.VISIBLE);
         //disable user interaction
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -66,19 +67,65 @@ public class DetalhesEventoActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                progressBarHolder.setAlpha(1f);
+                viewPager.setAlpha(1f);
                 progressBar.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
             }
         },3000);
 
-        candidatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
+        String keyaux="";
+        if (SnapshotEvento.getEvento().candidatos!=null){
+            for (String key : SnapshotEvento.getEvento().candidatos){
+                if (key.equals(SnapshotArtista.getId_artista())){
+                    keyaux=key;
+                    Log.d("Key",key);
+                }
             }
-        });
+        }
+        if (!keyaux.equals("")){
+            candidatar.setBackgroundColor(getResources().getColor(R.color.red));
+            String cancelar="Cancelar candidatura";
+            candidatar.setText(cancelar);
+            candidatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assert evento != null;
+                    Firebase.removeCandidatura(evento.id,SnapshotArtista.candidaturas, SnapshotArtista.getId_artista(), new Runnable() {
+                        @Override
+                        public void run() {
+
+                                Toast.makeText(DetalhesEventoActivity.this,"Candidatura removida com sucesso!"
+                                        ,Toast.LENGTH_LONG).show();
+                            candidatar.setBackgroundColor(getResources().getColor(R.color.mdtp_accent_color));
+                            String candidatura="Candidatar-se";
+                            candidatar.setText(candidatura);
+
+                        }
+                    });
+                }
+            });
+        }else {
+            candidatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assert evento != null;
+                    Firebase.candidatarEvento(evento.id, SnapshotArtista.getId_artista(), new Runnable() {
+                        @Override
+                        public void run() {
+
+                          Toast.makeText(DetalhesEventoActivity.this,"Candidatura realizada com sucesso!"
+                                        ,Toast.LENGTH_LONG).show();
+                            candidatar.setBackgroundColor(getResources().getColor(R.color.red));
+                            String cancelar="Cancelar candidatura";
+                            candidatar.setText(cancelar);
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     @Override
@@ -88,5 +135,11 @@ public class DetalhesEventoActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

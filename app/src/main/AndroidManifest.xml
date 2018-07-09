@@ -25,6 +25,13 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <service android:name=".services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <service
             android:name=".services.SearchArtistaService"
             android:enabled="true" />
@@ -73,7 +80,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/SearchTheme" />
         <activity
-            android:name=".artista.FavoritesEventsActivity"
+            android:name=".artista.FavoriteEventsActivity"
             android:label="@string/eventos_favoritos"
             android:screenOrientation="portrait"
             android:theme="@style/SearchTheme" />
@@ -120,8 +127,12 @@
             android:label="@string/editar_evento"
             android:screenOrientation="portrait"
             android:theme="@style/SearchTheme" />
-        <activity android:name=".contratante.DetalhesArtistaActivity" />
-        <activity android:name=".contratante.ResultadoBuscaContratanteActivity"/>
+        <activity android:name=".contratante.DetalhesArtistaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/detalhes_artista"/>
+        <activity android:name=".contratante.ResultadoBuscaContratanteActivity"
+            android:label="@string/resultado"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

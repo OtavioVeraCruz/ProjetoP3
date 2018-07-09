@@ -24,7 +24,6 @@ import butterknife.ButterKnife;
 public class BuscarEventoActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener  {
 
     @BindView(R.id.spinner_preco)Spinner spinner_preco;
-    @BindView(R.id.spinner_genero)Spinner spinner_genero;
     @BindView(R.id.auto_complete_city)AutoCompleteTextView autoCompleteTextView;
     @BindView(R.id.date_search_artist)EditText editDate;
     @BindView(R.id.btn_search_event)Button search;
@@ -41,26 +40,13 @@ public class BuscarEventoActivity extends AppCompatActivity implements DatePicke
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        ArrayAdapter<String> adapterGenero=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.generos);
-        spinner_genero.setAdapter(adapterGenero);
         ArrayAdapter<String> adapterPreco=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.faixas_preco);
         spinner_preco.setAdapter(adapterPreco);
         ArrayAdapter<String> adapterCidade=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.cidades);
         autoCompleteTextView.setAdapter(adapterCidade);
 
-        final String[] genero = new String[1];
         final String[] faixa_preco = new String[1];
-        spinner_genero.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                genero[0] = parent.getItemAtPosition(position).toString();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         spinner_preco.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -76,13 +62,24 @@ public class BuscarEventoActivity extends AppCompatActivity implements DatePicke
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    String query=genero[0]+"/"+faixa_preco[0]+"/"+autoCompleteTextView.getText().toString()+"/"
-                            +editDate.getText().toString();
+                String data = null,cidade = null;
 
-                    startActivity(new Intent(BuscarEventoActivity.this, ResultadoBuscaEventoActivity.class)
+                if (editDate.getText().toString().equals("")){
+                    data="qualquer";
+                }
+                else{
+                    data=editDate.getText().toString();
+                }
+                if (autoCompleteTextView.getText().toString().equals("")){
+                    cidade=ArrayString.cidades[0];
+                }
+                else {
+                    cidade=autoCompleteTextView.getText().toString();
+                }
+
+                String query=faixa_preco[0]+"#"+cidade+"#"+data;
+                startActivity(new Intent(BuscarEventoActivity.this, ResultadoBuscaEventoActivity.class)
                             .putExtra("search",query));
-
-
             }
         });
         loadDatePicker();

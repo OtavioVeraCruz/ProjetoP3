@@ -14,6 +14,7 @@ import com.example.otavio.newshowup.evento.EventoViewHolder;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.LoadImg;
 import com.example.otavio.newshowup.utils.SnapshotContratante;
+import com.example.otavio.newshowup.utils.SnapshotEvento;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
@@ -61,6 +62,21 @@ public class MeusEventosActivity extends AppCompatActivity {
                         LoadImg.loadImage(url, viewHolder.imageView, MeusEventosActivity.this);
                     }
                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SnapshotEvento.setEvento(model);
+                            Firebase.getArtistas(model.candidatos, new Runnable() {
+                                @Override
+                                public void run() {
+                                    startActivity(new Intent(MeusEventosActivity.this,
+                                            ArtistasFavoritosActivity.class).putExtra("nome_evento", model.nome));
+                                }
+                            });
+
+                        }
+                    });
+                    viewHolder.imageViewEdit.setVisibility(View.VISIBLE);
+                    viewHolder.imageViewEdit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             startActivity(new Intent(MeusEventosActivity.this, EditarEventoActivity.class)

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".artista.ResultadoBuscaEventoActivity">
+    tools:context=".artista.ResultadoBuscaEventoActivity"
+    android:background="@color/colorPrimaryDark">
 
-    <include layout="@layout/toolbar" />
 
     <ProgressBar
         android:id="@+id/progressbar"

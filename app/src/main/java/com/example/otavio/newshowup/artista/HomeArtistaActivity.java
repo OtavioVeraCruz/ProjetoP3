@@ -212,7 +212,7 @@ public class HomeArtistaActivity extends AppCompatActivity
         } else if (id==R.id.edit_perfil){
             startActivity(new Intent(this,PerfilArtistaActivity.class));
         } else if (id == R.id.eventos_fav) {
-            startActivity(new Intent(this,FavoritesEventsActivity.class));
+            startActivity(new Intent(this,FavoriteEventsActivity.class));
 
         } else if (id == R.id.logout) {
             (this).finish();

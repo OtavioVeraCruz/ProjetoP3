@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.otavio.newshowup.R;
@@ -27,8 +28,7 @@ public class ResultadoBuscaContratanteActivity extends AppCompatActivity {
 
     @BindView(R.id.rv_resultadocontratante)RecyclerView recyclerView;
     @BindView(R.id.text_resultado)TextView result;
-    String query;
-    String genero;
+    String query,genero,search;
     ArtistaAdapter adapter;
 
     @Override
@@ -44,8 +44,13 @@ public class ResultadoBuscaContratanteActivity extends AppCompatActivity {
         Intent i=getIntent();
         query=i.getStringExtra("query");
         genero=i.getStringExtra("genero");
+        search=i.getStringExtra("search");
         if (query.equals("genero")){
-            result.setText(result.getText()+" gênero: "+genero);
+            String aux=result.getText()+" gênero: "+genero;
+            result.setText(aux);
+        }
+        else {
+            result.setVisibility(View.INVISIBLE);
         }
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(ResultadoBuscaContratanteActivity.this);
@@ -59,13 +64,14 @@ public class ResultadoBuscaContratanteActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent load_feed=new Intent(this,SearchArtistaService.class);
-        load_feed.putExtra("query",query).putExtra("genero",genero);
+        load_feed.putExtra("query",query).putExtra("genero",genero).putExtra("search",search);
         startService(load_feed);
 
     }
     @Override
     protected void onResume() {
         super.onResume();
+
         IntentFilter f = new IntentFilter(SearchArtistaService.FEED_LOADED);
         LocalBroadcastManager.getInstance(getApplicationContext()).
                 registerReceiver(onDownloadCompleteEvent, f);
@@ -114,6 +120,5 @@ public class ResultadoBuscaContratanteActivity extends AppCompatActivity {
         adapter=null;
         finish();
     }
-
 
 }

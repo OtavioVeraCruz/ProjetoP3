@@ -24,7 +24,7 @@
     <string name="saved_user_uid">uid</string>
     <string name="home">Home</string>
     <string name="sair">Sair</string>
-    <string name="eventos_favoritos">Eventos Favoritos</string>
+    <string name="eventos_favoritos">Eventos Candidatados</string>
     <string name="todo">TODO</string>
     <string name="buscar">Buscar</string>
     <string name="title_activity_perfil_artista">Settings</string>
@@ -100,7 +100,7 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="artistas_favoritos">Artistas Favoritos</string>
+    <string name="artistas_favoritos">Artistas</string>
     <string name="meus_eventos">Meus Eventos</string>
     <string name="add_evento">Criar Evento</string>
     <string name="registrar">Registrar-se</string>
@@ -136,6 +136,10 @@
     <string name="contato_artista">Contato:</string>
     <string name="foto_do_artista">Foto do artista</string>
     <string name="faixa_de_pre_o_por_show">Faixa de Preço por show:</string>
+    <string name="artistas_candidataram">Candidatos para o evento: </string>
+    <string name="detalhes_artista">Detalhes do Artista</string>
+    <string name="artistas_em_destaque">Artistas em destaque</string>
+    <string name="copie_e_cole_youtube">Copie e Cole a url do seu canal do youtube</string>
 
 
 </resources>

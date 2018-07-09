@@ -29,7 +29,7 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
     @Override
     public ArtistaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ArtistaAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.item_evento,parent,false));
+                inflate(R.layout.item_artista,parent,false));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
         holder.linear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context. startActivity(new Intent(context,DetalhesArtistaActivity.class).
+                context.startActivity(new Intent(context,DetalhesArtistaActivity.class).
                         putExtra("artista", artistas.get(holder.getAdapterPosition())));
             }
         });
@@ -58,16 +58,15 @@ public class ArtistaAdapter extends RecyclerView.Adapter<ArtistaAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView title,cidade,faixa_preco,data;
+        TextView title,cidade,faixa_preco;
         LinearLayout linear;
         ViewHolder(View itemView) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.item_evento_image);
-            title = itemView.findViewById(R.id.item_evento_title);
-            cidade=itemView.findViewById(R.id.item_evento_cidade);
-            faixa_preco=itemView.findViewById(R.id.item_evento_preco);
-            data=itemView.findViewById(R.id.item_evento_data);
-            linear=itemView.findViewById(R.id.item_evento);
+            imageView=itemView.findViewById(R.id.item_artista_image);
+            title = itemView.findViewById(R.id.item_artista_nome);
+            cidade=itemView.findViewById(R.id.item_artista_cidade);
+            faixa_preco=itemView.findViewById(R.id.item_artista_faixa_preco);
+            linear=itemView.findViewById(R.id.item_artista);
         }
     }
 

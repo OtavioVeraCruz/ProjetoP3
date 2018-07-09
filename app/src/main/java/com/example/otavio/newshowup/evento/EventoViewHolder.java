@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.example.otavio.newshowup.R;
 
 public class EventoViewHolder extends RecyclerView.ViewHolder {
-    public ImageView imageView,imageViewDelete;
+    public ImageView imageView,imageViewDelete,imageViewEdit;
     public TextView title,cidade,faixa_preco,data;
     EventoViewHolder(View itemView) {
         super(itemView);
@@ -18,5 +18,6 @@ public class EventoViewHolder extends RecyclerView.ViewHolder {
         faixa_preco=itemView.findViewById(R.id.item_evento_preco);
         data=itemView.findViewById(R.id.item_evento_data);
         imageViewDelete=itemView.findViewById(R.id.img_remove_event);
+        imageViewEdit=itemView.findViewById(R.id.img_edit_event);
     }
 }

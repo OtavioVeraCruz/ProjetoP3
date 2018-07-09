@@ -15,16 +15,16 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -46,12 +46,10 @@ import butterknife.ButterKnife;
 
 public class ArtistRegistrationActivity extends AppCompatActivity {
 
-    @BindView(R.id.progressbarHolderArtistaSignIn)LinearLayout progressBarHolder;
-    @BindView(R.id.progressBarArtistaSignIn)ProgressBar progressBar;
     @BindView(R.id.img_profile)ImageView img_artista;
     @BindView(R.id.editNome)EditText editNome;
     @BindView(R.id.editEstado)EditText editEstado;
-    @BindView(R.id.editCidade)EditText editCidade;
+    @BindView(R.id.editCidade)AutoCompleteTextView autoCompleteTextView;
     @BindView(R.id.spinner_genero)Spinner spinner_genero;
     @BindView(R.id.spinner_faixa_preco)Spinner spinner_faixa_preco;
     @BindView(R.id.editTelefone)EditText editTelefone;
@@ -94,21 +92,64 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
 
             }
         });
+        ArrayAdapter<String> adapterCidade=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, ArrayString.cidades);
+        autoCompleteTextView.setAdapter(adapterCidade);
+
+        editTelefone.addTextChangedListener(new TextWatcher() {
+            boolean editedFlag;
+            boolean backspacingFlag;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                backspacingFlag = count > after;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                String newText;
+                String phoneString = text.replaceAll("[\\D]","");
+                int phoneLength = phoneString.length();
+                int cursor = 0;
+                if(!editedFlag) {
+                    editedFlag = true;
+
+                    if(!backspacingFlag && phoneLength > 11) {
+                        phoneString = phoneString.substring(0,phoneLength-1);
+                        phoneLength = phoneString.length();
+                    }
+
+                    String underline = "___________";
+                    phoneString = phoneString + underline.substring(0,11-phoneLength);
+                    newText = "(" + phoneString.substring(0,2) + ") " + phoneString.substring(2,7) + "-" + phoneString.substring(7,11);
+                    editTelefone.setText(newText);
+
+                    if(phoneLength >= 0) cursor++;
+                    if(phoneLength > 2) cursor+=2;
+                    if(phoneLength > 7) cursor++;
+                    cursor+=phoneLength;
+                    editTelefone.setSelection(cursor);
+                }
+                else {
+                    editedFlag = false;
+                }
+            }
+        });
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (!editNome.getText().toString().equals("")&&!editCidade.getText().toString().equals("")&&
+                if (!editNome.getText().toString().equals("")&&!autoCompleteTextView.getText().toString().equals("")&&
                         !editEstado.getText().toString().equals("")&&!editTelefone.getText().toString().equals("")&&
                        !genero[0].equals(ArrayString.generos[0])&&!faixa_preco[0].equals(ArrayString.faixas_preco[0])){
-                    progressBarHolder.setAlpha(0.4f);
-                    progressBar.setVisibility(View.VISIBLE);
-                    //disable user interaction
-                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                     Firebase.DadosArtista dadosArtista=new Firebase.DadosArtista(editTelefone.getText().toString(),
-                            editCidade.getText().toString(),editEstado.getText().toString(),genero[0],faixa_preco[0]);
+                            autoCompleteTextView.getText().toString(),editEstado.getText().toString(),genero[0],faixa_preco[0]);
                     Firebase.insertArtist(editNome.getText().toString(),picturePath,dadosArtista,Firebase.getmAuth().
                             getCurrentUser().getUid(),new Runnable(){
                         @Override
@@ -126,7 +167,7 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
                 else if(editEstado.getText().toString().equals("")){
                     Toast.makeText(ArtistRegistrationActivity.this, "Preencha o campo estado!", Toast.LENGTH_SHORT).show();
                 }
-                else if(editCidade.getText().toString().equals("")){
+                else if(autoCompleteTextView.getText().toString().equals("")){
                     Toast.makeText(ArtistRegistrationActivity.this, "Preencha o campo cidade!", Toast.LENGTH_SHORT).show();
                 }
                 else if(editTelefone.getText().toString().equals("")){
@@ -288,7 +329,7 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
         outState.putString("nome",editNome.getText().toString());
         outState.putString("img_artista",picturePath);
         outState.putString("estado",editEstado.getText().toString());
-        outState.putString("cidade",editCidade.getText().toString());
+        outState.putString("cidade",autoCompleteTextView.getText().toString());
         outState.putString("telefone",editTelefone.getText().toString());
     }
 
@@ -299,7 +340,7 @@ public class ArtistRegistrationActivity extends AppCompatActivity {
             editNome.setText(savedInstanceState.getString("nome"));
             picturePath=savedInstanceState.getString("img_artista");
             editEstado.setText(savedInstanceState.getString("estado"));
-            editCidade.setText(savedInstanceState.getString("cidade"));
+            autoCompleteTextView.setText(savedInstanceState.getString("cidade"));
             editTelefone.setText(savedInstanceState.getString("telefone"));
         }
     }

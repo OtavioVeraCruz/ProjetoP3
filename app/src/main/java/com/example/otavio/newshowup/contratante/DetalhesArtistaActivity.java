@@ -25,6 +25,7 @@ public class DetalhesArtistaActivity extends AppCompatActivity {
     @BindView(R.id.text_contato)TextView contato;
     @BindView(R.id.text_faixa_preco_artista)TextView faixa_preco;
     @BindView(R.id.btn_youtube_playlist)Button youtube_playlist;
+    @BindView(R.id.text_canalyoutube)TextView canal_youtube;
     @BindView(R.id.text_cidade_artista)TextView cidade;
 
     @Override
@@ -49,20 +50,26 @@ public class DetalhesArtistaActivity extends AppCompatActivity {
         contato.setText(contato_art);
         String preco=faixa_preco.getText().toString()+artista.dadosArtista.faixa_preco;
         faixa_preco.setText(preco);
-        youtube_playlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (artista.youtube_channel!=null) {
-                    Intent i = new Intent(DetalhesArtistaActivity.this, YoutubeActivity.class);
-                    Log.d("playlist",artista.youtube_channel);
-                    i.putExtra("playlist", artista.youtube_channel);
-                    startActivity(i);
+
+        if (artista.youtube_channel!=null) {
+            youtube_playlist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (artista.youtube_channel != null) {
+                        Intent i = new Intent(DetalhesArtistaActivity.this, YoutubeActivity.class);
+                        Log.d("playlist", artista.youtube_channel);
+                        i.putExtra("playlist", artista.youtube_channel);
+                        startActivity(i);
+                    } else {
+                        Log.d("Error", "Error youtube!");
+                    }
                 }
-                else {
-                    Log.d("Error","Error youtube!");
-                }
-            }
-        });
+            });
+        }
+        else {
+            youtube_playlist.setVisibility(View.INVISIBLE);
+            canal_youtube.setVisibility(View.INVISIBLE);
+        }
 
     }
     @Override

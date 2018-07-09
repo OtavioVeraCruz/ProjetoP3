@@ -1,82 +1,119 @@
 package com.example.otavio.newshowup.artista;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.otavio.newshowup.R;
-import com.example.otavio.newshowup.evento.EventoViewHolder;
+import com.example.otavio.newshowup.services.SearchEventService;
 import com.example.otavio.newshowup.utils.Firebase;
-import com.example.otavio.newshowup.utils.LoadImg;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.Query;
+import com.example.otavio.newshowup.utils.SnapshotArtista;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ResultadoBuscaEventoActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)Toolbar toolbar;
     @BindView(R.id.recycler_search_event)RecyclerView recyclerView;
+    @BindView(R.id.progressbar)ProgressBar progressBar;
     String query;
+    EventoAdapter adapter;
 
-    private FirebaseRecyclerAdapter<Firebase.Evento, EventoViewHolder> mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultado_busca_evento);
         ButterKnife.bind(this);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         Intent i = getIntent();
         query=i.getStringExtra("search");
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        Query q=Firebase.mDatabaseRef.child("Evento");
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ResultadoBuscaEventoActivity.this);
         layoutManager.setReverseLayout(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new FirebaseRecyclerAdapter<Firebase.Evento, EventoViewHolder>(
-                Firebase.Evento.class, R.layout.item_evento, EventoViewHolder.class, q) {
-            @Override
-            protected void populateViewHolder(EventoViewHolder viewHolder, Firebase.Evento model, int position) {
-                viewHolder.cidade.setText(model.cidade);
-                viewHolder.data.setText(model.data);
-                viewHolder.data.setText(model.nome);
-                viewHolder.faixa_preco.setText(model.faixa_preco);
-                String desc=model.descricao;
-                viewHolder.data.setText(desc);
-                String url=model.fotos.get(0);
-                LoadImg.loadImage(url,viewHolder.imageView,ResultadoBuscaEventoActivity.this);
-            }
-
-            @Override
-            public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
-                super.onChildChanged(type, snapshot, index, oldIndex);
-                recyclerView.scrollToPosition(index);
-            }
-        };
-        recyclerView.setAdapter(mAdapter);
 
     }
 
-    @Override
     protected void onStart() {
         super.onStart();
-        /*Intent intent=new Intent(this, SearchArtistaService.class);
-        intent.putExtra("search",query);
-        startService(intent);*/
+        Intent load_feed=new Intent(this,SearchEventService.class);
+        load_feed.putExtra("search",query);
+        startService(load_feed);
+
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter f = new IntentFilter(SearchEventService.FEED);
+        LocalBroadcastManager.getInstance(getApplicationContext()).
+                registerReceiver(onDownloadCompleteEvent, f);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getApplicationContext()).
+                unregisterReceiver(onDownloadCompleteEvent);
+    }
+
+    class ExibirFeed extends AsyncTask<Void, Void, ArrayList<Firebase.Evento>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected  ArrayList<Firebase.Evento> doInBackground(Void... voids) {
+            return SnapshotArtista.eventos;
+        }
+
+        @Override
+        protected void onPostExecute( ArrayList<Firebase.Evento> c) {
+            if (c != null) {
+                adapter=new EventoAdapter(ResultadoBuscaEventoActivity.this,c);
+                recyclerView.setAdapter(adapter);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    private BroadcastReceiver onDownloadCompleteEvent=new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent i) {
+            new ExibirFeed().execute();
+        }
+    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdapter.cleanup();
+        adapter=null;
+        SnapshotArtista.eventos=new ArrayList<>();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

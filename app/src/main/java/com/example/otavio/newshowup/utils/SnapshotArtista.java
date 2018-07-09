@@ -1,5 +1,6 @@
 package com.example.otavio.newshowup.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SnapshotArtista {
@@ -8,6 +9,8 @@ public class SnapshotArtista {
     public static String id_artista;
     private static final SnapshotArtista snapshot = new SnapshotArtista();
     public static HashMap<String,Firebase.Candidatura> candidaturas=new HashMap<>();
+    public static ArrayList<Firebase.Evento>eventos=new ArrayList<>();
+    public static ArrayList<Firebase.Evento>eventos_candidatados=new ArrayList<>();
     private SnapshotArtista() {}
 
     public static SnapshotArtista getInstance() {

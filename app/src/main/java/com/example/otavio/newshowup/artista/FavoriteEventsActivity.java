@@ -1,49 +1,45 @@
-package com.example.otavio.newshowup.contratante;
+package com.example.otavio.newshowup.artista;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.otavio.newshowup.R;
-import com.example.otavio.newshowup.utils.SnapshotContratante;
-
-import java.util.ArrayList;
+import com.example.otavio.newshowup.utils.SnapshotArtista;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArtistasFavoritosActivity extends AppCompatActivity {
+public class FavoriteEventsActivity extends AppCompatActivity {
 
-    @BindView(R.id.recycler_candidatos)RecyclerView recyclerView;
-    @BindView(R.id.text_candidatos)TextView textViewEvento;
-    ArtistaAdapter adapter;
+    @BindView(R.id.rv_favorite_events)RecyclerView recyclerView;
+    EventoAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artistas_favoritos);
+        setContentView(R.layout.activity_favorites_events);
         ButterKnife.bind(this);
         if (getSupportActionBar()!=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        String nome_evento=textViewEvento.getText().toString()+getIntent().getStringExtra("nome_evento");
-        textViewEvento.setText(nome_evento);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ArtistasFavoritosActivity.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        adapter=new ArtistaAdapter(SnapshotContratante.artistas,ArtistasFavoritosActivity.this);
+        adapter=new EventoAdapter(this,SnapshotArtista.eventos_candidatados);
         recyclerView.setAdapter(adapter);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SnapshotContratante.artistas=new ArrayList<>();
         adapter=null;
+        //SnapshotArtista.eventos_candidatados
     }
 
     @Override

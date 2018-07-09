@@ -40,14 +40,14 @@ public class Firebase {
     private static StorageReference mStorageRef=mStorage.getReference();
     private static String TAG="Firebase";
     private static boolean isEventRemoved;
-    private static boolean isEventEdited;
+
     @IgnoreExtraProperties
     public static class Artista implements Serializable{
         public String id;
         public String nome;
         public String foto;
         public DadosArtista dadosArtista;
-        String token;
+        public String token;
         public String uid;
         public String youtube_channel;
         public ArrayList<String>candidaturas;
@@ -228,6 +228,52 @@ public class Firebase {
         });
 
     }
+    public static void updateArtista(final Artista artista, final Runnable runnable){
+
+        uploadPhoto(artista.id, artista.foto, "Artista", new Runnable() {
+            @Override
+            public void run() {
+                artista.foto=SnapshotArtista.getArtista().foto;
+                mDatabaseRef.child("Artista").child(artista.id).
+                        setValue(artista).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            runnable.run();
+                        }
+                        else {
+                            runnable.run();
+                        }
+                    }
+                });
+
+            }
+        });
+
+    }
+    public static void getArtistas(final ArrayList<String>candidatos, final Runnable runnable){
+        mDatabaseRef.child("Artista").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data:dataSnapshot.getChildren()){
+                    Artista artista=data.getValue(Artista.class);
+                    for (String id_candidato:candidatos){
+                        assert artista != null;
+                        if (artista.id.equals(id_candidato)){
+                            SnapshotContratante.artistas.add(artista);
+                        }
+                    }
+
+                }
+                runnable.run();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     private static void getContratante(final String id, final TaskCompletionSource<Boolean> dbSource){
         Query query = mDatabaseRef.child("Contratante");
 
@@ -272,6 +318,7 @@ public class Firebase {
                     assert candidatura != null;
                     if (candidatura.id_artista.equals(id_artista)){
                         SnapshotArtista.candidaturas.put(candidatura.id,candidatura);
+                        getEventos(candidatura.id_evento);
                     }
                 }
                 runnable.run();
@@ -337,16 +384,22 @@ public class Firebase {
         runnable.run();
 
     }
-    public static void getEventos(String genero,String preco,String cidade,String data){
+    public static void getEventos(final String id){
         Query query=mDatabaseRef.child("Evento");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data:dataSnapshot.getChildren()){
+                    Evento evento=data.getValue(Evento.class);
+                    assert evento!=null;
+                    if (evento.id.equals(id)){
+                        SnapshotArtista.eventos_candidatados.add(evento);
+                    }
+                }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -384,6 +437,29 @@ public class Firebase {
         });
         onLoad.run();
     }
+    public static void updateContratante(final Contratante contratante, final Runnable runnable){
+
+        uploadPhoto(contratante.id, contratante.foto, "Contratante", new Runnable() {
+            @Override
+            public void run() {
+                contratante.foto=SnapshotContratante.getContratante().foto;
+                mDatabaseRef.child("Contratante").child(contratante.id).
+                        setValue(contratante).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            runnable.run();
+                        }
+                        else {
+                            runnable.run();
+                        }
+                    }
+                });
+
+            }
+        });
+
+    }
     public static void insertEvento(String id_contratante,String nome,String descricao,ArrayList<String> instrumentos,
                                     String faixa_preco,ArrayList<String> fotos,String cidade,String data,
                                     final Runnable onLoad){
@@ -393,7 +469,7 @@ public class Firebase {
                fotos,cidade,data,null);
 
        SnapshotContratante.setEvento(evento);
-       uploadPhotos(id_evento,fotos,"evento", new Runnable() {
+       uploadPhotos(id_evento,fotos, new Runnable() {
            @Override
            public void run() {
                 Evento evento1=SnapshotContratante.getEvento();
@@ -404,9 +480,6 @@ public class Firebase {
     }
     public static void updateEvento(final Evento evento, final Runnable onLoad){
 
-        uploadPhotos(evento.id, evento.fotos, "Evento", new Runnable() {
-            @Override
-            public void run() {
                 mDatabaseRef.child("Evento").child(evento.id).setValue(evento).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -420,10 +493,6 @@ public class Firebase {
                         }
                     }
                 });
-            }
-        });
-
-
     }
     public static void removeEvento(String id, final Runnable onLoad){
 
@@ -451,63 +520,58 @@ public class Firebase {
         return isEventRemoved;
     }
 
-    public static void setIsEventEdited(boolean edited){
-        isEventEdited=edited;
-    }
-    public static boolean getIsEventEdited(){
-        return isEventEdited;
-    }
-
     //Upload imgs
-    public static void uploadPhoto(String id, String foto, final String entity, final Runnable onLoaded){
+    private static void uploadPhoto(String id, String foto, final String entity, final Runnable onLoaded){
         Log.d(TAG,"uploading started!");
         Uri uri=Uri.fromFile(new File(foto));
         Log.d(TAG,foto);
         final StorageReference storageReference;
-        if (entity.equalsIgnoreCase("artista")){
-            storageReference=mStorageRef.child("foto_artista/"+id+"/foto_artista");
-        }
-        else{
-            storageReference=mStorageRef.child("foto_contratante/"+id+"/foto_contratante");
-        }
-        final UploadTask uploadTask=storageReference.putFile(uri);
-
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw Objects.requireNonNull(task.getException());
-                }
-
-                // Continue with the task to get the download URL
-                return storageReference.getDownloadUrl();
+        if (!foto.contains("firebasestorage")) {
+            if (entity.equalsIgnoreCase("artista")) {
+                storageReference = mStorageRef.child("foto_artista/" + id + "/foto_artista");
+            } else {
+                storageReference = mStorageRef.child("foto_contratante/" + id + "/foto_contratante");
             }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    if (entity.equalsIgnoreCase("artista")){
-                        SnapshotArtista.getArtista().foto=downloadUri.toString();
+            final UploadTask uploadTask = storageReference.putFile(uri);
+
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw Objects.requireNonNull(task.getException());
                     }
-                    else{
-                        SnapshotContratante.getContratante().foto=downloadUri.toString();
-                    }
-                    onLoaded.run();
-                } else {
-                    Log.d(TAG,"upload falhou!");
+
+                    // Continue with the task to get the download URL
+                    return storageReference.getDownloadUrl();
                 }
-            }
-        });
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        if (entity.equalsIgnoreCase("artista")) {
+                            SnapshotArtista.getArtista().foto = downloadUri.toString();
+                        } else {
+                            SnapshotContratante.getContratante().foto = downloadUri.toString();
+                        }
+                        onLoaded.run();
+                    } else {
+                        Log.d(TAG, "upload falhou!");
+                    }
+                }
+            });
+        }
+        else {
+            Log.d("Img","Img permanece a mesma!");
+            onLoaded.run();
+        }
 
     }
-    public static void uploadPhotos(String id, final ArrayList<String> fotos, final String entity,
-                                    final Runnable onLoaded){
+    private static void uploadPhotos(String id, final ArrayList<String> fotos,final Runnable onLoaded){
         Log.d(TAG,"uploading started!");
         final ArrayList<String >aux=new ArrayList<>();
         for (int i=0;i<fotos.size();i++) {
-            if(!fotos.get(i).contains("firebasestorage")) {
                 Uri uri = Uri.fromFile(new File(fotos.get(i)));
                 final StorageReference storageReference;
                 String nome_foto = (fotos.get(i).split("/"))[6];
@@ -532,8 +596,6 @@ public class Firebase {
                         if (task.isSuccessful()) {
                             Uri downloadUri = task.getResult();
                             aux.add(downloadUri.toString());
-                        } else {
-                            Log.d(TAG, "upload falhou!");
                         }
                         if ((aux.size() - 1) == finalI) {
                             SnapshotContratante.getEvento().fotos.addAll(aux);
@@ -541,11 +603,6 @@ public class Firebase {
                         }
                     }
                 });
-                Log.d("For", "qtd " + i);
-            }
-            else{
-                Log.d("Image", "Img permanece a mesma ");
-            }
         }
 
 
@@ -567,7 +624,7 @@ public class Firebase {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                     if(Objects.equals(childDataSnapshot.child("uid").getValue(), uid)){
                         String id = (String) childDataSnapshot.child("id").getValue();

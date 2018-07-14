@@ -207,9 +207,7 @@ public class HomeArtistaActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.home_artista) {
-
-        } else if (id==R.id.edit_perfil){
+        if (id==R.id.edit_perfil){
             startActivity(new Intent(this,PerfilArtistaActivity.class));
         } else if (id == R.id.eventos_fav) {
             startActivity(new Intent(this,FavoriteEventsActivity.class));

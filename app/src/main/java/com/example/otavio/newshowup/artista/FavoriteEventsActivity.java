@@ -32,7 +32,7 @@ public class FavoriteEventsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter=new EventoAdapter(this,SnapshotArtista.eventos_candidatados);
         recyclerView.setAdapter(adapter);
-
+        SnapshotArtista.setEventoAdapter(adapter);
     }
 
     @Override

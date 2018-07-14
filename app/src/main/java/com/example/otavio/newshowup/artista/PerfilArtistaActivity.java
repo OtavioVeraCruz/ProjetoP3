@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -64,6 +65,10 @@ public class PerfilArtistaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_artista);
         ButterKnife.bind(this);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         String nome= SnapshotArtista.getArtista().nome;
         String youtube="";
@@ -345,5 +350,14 @@ public class PerfilArtistaActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

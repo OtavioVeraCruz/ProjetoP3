@@ -27,6 +27,7 @@ public class DetalhesArtistaActivity extends AppCompatActivity {
     @BindView(R.id.btn_youtube_playlist)Button youtube_playlist;
     @BindView(R.id.text_canalyoutube)TextView canal_youtube;
     @BindView(R.id.text_cidade_artista)TextView cidade;
+    @BindView(R.id.btnSelecionarArtista)Button btn_selecionar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,13 @@ public class DetalhesArtistaActivity extends AppCompatActivity {
             youtube_playlist.setVisibility(View.INVISIBLE);
             canal_youtube.setVisibility(View.INVISIBLE);
         }
+
+        btn_selecionar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
     @Override

@@ -65,14 +65,19 @@ public class MeusEventosActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             SnapshotEvento.setEvento(model);
-                            Firebase.getArtistas(model.candidatos, new Runnable() {
-                                @Override
-                                public void run() {
-                                    startActivity(new Intent(MeusEventosActivity.this,
-                                            ArtistasFavoritosActivity.class).putExtra("nome_evento", model.nome));
-                                }
-                            });
-
+                            if (model.candidatos!=null) {
+                                Firebase.getArtistas(model.candidatos, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startActivity(new Intent(MeusEventosActivity.this,
+                                                ArtistasFavoritosActivity.class).putExtra("nome_evento", model.nome));
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.makeText(MeusEventosActivity.this,"Nenhum artista se candidatou!",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
                     viewHolder.imageViewEdit.setVisibility(View.VISIBLE);

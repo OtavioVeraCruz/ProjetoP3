@@ -90,12 +90,12 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="148dp"
-        android:background="@color/mdtp_accent_color"
+        android:layout_marginTop="132dp"
+        android:background="#bc4640"
         android:text="@string/visualizar"
         android:textColor="@color/mdtp_white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toEndOf="@+id/text_canalyoutube"
         app:layout_constraintTop_toBottomOf="@+id/image_artista_detalhes" />
 
@@ -128,4 +128,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_faixa_preco_artista"
         app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnSelecionarArtista"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:background="@color/mdtp_accent_color"
+        android:text="Selecionar"
+        android:textColor="@color/mdtp_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_faixa_preco_artista" />
+
 </android.support.constraint.ConstraintLayout>

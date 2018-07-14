@@ -3,6 +3,7 @@ package com.example.otavio.newshowup.utils;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +30,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class Firebase {
@@ -159,6 +160,19 @@ public class Firebase {
         }
     }
 
+    @IgnoreExtraProperties
+    public static class Notifica{
+        public String id;
+        public String id_artista;
+        public String id_contratante;
+        public Notifica(){}
+        public Notifica(String id,String id_artista,String id_contratante){
+            this.id=id;
+            this.id_artista=id_artista;
+            this.id_contratante=id_contratante;
+        }
+    }
+
     public static void recover_artista(String artista_id, final Runnable runnable){
         TaskCompletionSource<Boolean> getArtistaSource = new TaskCompletionSource<>();
         Task getArtista = getArtistaSource.getTask();
@@ -257,9 +271,9 @@ public class Firebase {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data:dataSnapshot.getChildren()){
                     Artista artista=data.getValue(Artista.class);
-                    for (String id_candidato:candidatos){
+                    for (int i=0;i<candidatos.size();i++){
                         assert artista != null;
-                        if (artista.id.equals(id_candidato)){
+                        if (artista.id.equals(candidatos.get(i))){
                             SnapshotContratante.artistas.add(artista);
                         }
                     }
@@ -343,25 +357,56 @@ public class Firebase {
             runnable.run();
         }
     }
-    public static void insertCandidatura(String id_artista,String id_evento){
-        String id=mDatabaseRef.child("Candidatura").push().getKey();
-        Candidatura candidatura=new Candidatura(id,id_artista,id_evento);
-        assert id != null;
-        mDatabaseRef.child("Candidatura").child(id).setValue(candidatura);
-        SnapshotEvento.getEvento().candidatos.add(id_artista);
+    private static synchronized void insertCandidatura(String id_artista, String id_evento){
+        String id = mDatabaseRef.child("Candidatura").push().getKey();
+        if (SnapshotArtista.candidaturas.size()>0) {
+            boolean existe=false;
+            for (String key:SnapshotArtista.candidaturas.keySet()){
+                Candidatura aux=SnapshotArtista.candidaturas.get(key);
+                if (aux.id_evento.equals(id_evento)){
+                    existe=true;
+                }
+            }
+            if (!existe) {
+                Candidatura candidatura = new Candidatura(id, id_artista, id_evento);
+                assert id != null;
+                mDatabaseRef.child("Candidatura").child(id).setValue(candidatura);
+                SnapshotArtista.candidaturas.put(id,candidatura);
 
-        mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
-                SnapshotEvento.getEvento().candidatos);
+                SnapshotEvento.getEvento().candidatos.add(id_artista);
+                mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
+                        SnapshotEvento.getEvento().candidatos);
 
-        if (SnapshotArtista.getArtista().candidaturas==null){
-            SnapshotArtista.getArtista().candidaturas=new ArrayList<>();
+                if (SnapshotArtista.getArtista().candidaturas == null) {
+                    SnapshotArtista.getArtista().candidaturas = new ArrayList<>();
+                }
+
+                SnapshotArtista.getArtista().candidaturas.add(id);
+                mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(
+                        SnapshotArtista.getArtista().candidaturas);
+            }
+        }
+        else {
+            Candidatura candidatura = new Candidatura(id, id_artista, id_evento);
+            assert id != null;
+            mDatabaseRef.child("Candidatura").child(id).setValue(candidatura);
+            SnapshotArtista.candidaturas.put(id,candidatura);
+
+            SnapshotEvento.getEvento().candidatos.add(id_artista);
+            mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
+                    SnapshotEvento.getEvento().candidatos);
+
+            if (SnapshotArtista.getArtista().candidaturas==null){
+                SnapshotArtista.getArtista().candidaturas=new ArrayList<>();
+            }
+
+            SnapshotArtista.getArtista().candidaturas.add(id);
+            mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(
+                    SnapshotArtista.getArtista().candidaturas);
         }
 
-        SnapshotArtista.getArtista().candidaturas.add(id);
-        mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(
-                SnapshotArtista.getArtista().candidaturas);
     }
-    public static void removeCandidatura(String id_evento, HashMap<String,Candidatura> candidaturas, String id_artista,
+    public static synchronized void removeCandidatura(String id_evento, String id_artista,
                                          Runnable runnable){
 
         for (int i=0;i<SnapshotEvento.getEvento().candidatos.size();i++){
@@ -370,21 +415,32 @@ public class Firebase {
                 SnapshotEvento.getEvento().candidatos.remove(i);
                 mDatabaseRef.child("Evento").child(id_evento).child("candidatos").setValue(
                         SnapshotEvento.getEvento().candidatos);
+                break;
             }
         }
-        for (String candidatura:candidaturas.keySet()){
+        String id_candidatura="";
+        for (String candidatura:SnapshotArtista.getCandidaturas().keySet()){
             Candidatura aux=SnapshotArtista.getCandidaturas().get(candidatura);
             if (aux.id_evento.equals(id_evento)){
                 SnapshotArtista.candidaturas.remove(aux.id);
                 mDatabaseRef.child("Candidatura").child(aux.id).setValue(null);
+                id_candidatura=aux.id;
+                break;
             }
         }
-        mDatabaseRef.child("Artista").child(id_artista).child("candidaturas").setValue(SnapshotArtista.candidaturas);
+        for(int j=0;j<SnapshotArtista.getArtista().candidaturas.size();j++){
+            if (SnapshotArtista.getArtista().candidaturas.get(j).equals(id_candidatura)){
+                SnapshotArtista.getArtista().candidaturas.remove(j);
+                break;
+            }
+        }
+        mDatabaseRef.child("Artista").child(id_artista).child("candidaturas")
+                .setValue(SnapshotArtista.getArtista().candidaturas);
 
         runnable.run();
 
     }
-    public static void getEventos(final String id){
+    private static void getEventos(final String id){
         Query query=mDatabaseRef.child("Evento");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -393,9 +449,57 @@ public class Firebase {
                     Evento evento=data.getValue(Evento.class);
                     assert evento!=null;
                     if (evento.id.equals(id)){
-                        SnapshotArtista.eventos_candidatados.add(evento);
+                        if (SnapshotArtista.eventos_candidatados.size()>0) {
+                            boolean existe=false;
+                            for (int i = 0; i < SnapshotArtista.eventos_candidatados.size(); i++) {
+                                if (SnapshotArtista.eventos_candidatados.get(i).id.equals(id)){
+                                    existe=true;
+                                }
+                            }
+                            if (!existe){
+                                SnapshotArtista.eventos_candidatados.add(evento);
+                            }
+                        }
+                        else{
+                            SnapshotArtista.eventos_candidatados.add(evento);
+                        }
+
                     }
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Evento evento=dataSnapshot.getValue(Evento.class);
+                    for (int i=0;i<SnapshotArtista.eventos_candidatados.size();i++){
+                        assert evento != null;
+                        if (evento.id.equals(SnapshotArtista.eventos_candidatados.get(i).id)){
+                            SnapshotArtista.eventos_candidatados.remove(i);
+                            SnapshotArtista.eventoAdapter.setEventos(SnapshotArtista.eventos_candidatados);
+                            SnapshotArtista.eventoAdapter.notifyDataSetChanged();
+                        }
+                    }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override

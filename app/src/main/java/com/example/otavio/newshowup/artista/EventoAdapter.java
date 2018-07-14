@@ -29,6 +29,10 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.ViewHolder
         this.eventos=eventos;
     }
 
+    public void setEventos(ArrayList<Firebase.Evento>eventos){
+        this.eventos=eventos;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

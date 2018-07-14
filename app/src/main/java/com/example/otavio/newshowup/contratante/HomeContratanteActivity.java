@@ -250,18 +250,10 @@ public class HomeContratanteActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_home_contratante) {
-
-
-        }else if (id == R.id.edit_perfil_contratante) {
+        if (id == R.id.edit_perfil_contratante) {
             startActivity(new Intent(HomeContratanteActivity.this,PerfilContratanteActivity.class));
 
-        }/*else if (id == R.id.nav_favorites) {
-            startActivity(new Intent(HomeContratanteActivity.this,ArtistasFavoritosActivity.class));
-
-        }*/
-
+        }
         else if (id == R.id.nav_logout) {
             finish();
             logout();

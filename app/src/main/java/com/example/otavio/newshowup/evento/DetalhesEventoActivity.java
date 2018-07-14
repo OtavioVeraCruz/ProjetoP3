@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.otavio.newshowup.R;
+import com.example.otavio.newshowup.artista.HomeArtistaActivity;
 import com.example.otavio.newshowup.utils.Firebase;
 import com.example.otavio.newshowup.utils.SnapshotArtista;
 import com.example.otavio.newshowup.utils.SnapshotEvento;
@@ -32,6 +32,7 @@ public class DetalhesEventoActivity extends AppCompatActivity {
     @BindView(R.id.event_price)TextView price;
     @BindView(R.id.btn_candidatar_evento)Button candidatar;
     @BindView(R.id.progressBarDetails)ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,27 +81,31 @@ public class DetalhesEventoActivity extends AppCompatActivity {
             for (String key : SnapshotEvento.getEvento().candidatos){
                 if (key.equals(SnapshotArtista.getId_artista())){
                     keyaux=key;
-                    Log.d("Key",key);
                 }
             }
         }
         if (!keyaux.equals("")){
+
             candidatar.setBackgroundColor(getResources().getColor(R.color.red));
-            String cancelar="Cancelar candidatura";
+            final String cancelar="Cancelar candidatura";
             candidatar.setText(cancelar);
             candidatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    candidatar.setEnabled(false);
                     assert evento != null;
-                    Firebase.removeCandidatura(evento.id,SnapshotArtista.candidaturas, SnapshotArtista.getId_artista(), new Runnable() {
+                    Firebase.removeCandidatura(evento.id, SnapshotArtista.getId_artista(), new Runnable() {
                         @Override
                         public void run() {
 
-                                Toast.makeText(DetalhesEventoActivity.this,"Candidatura removida com sucesso!"
+                            Toast.makeText(DetalhesEventoActivity.this,"Candidatura removida com sucesso!"
                                         ,Toast.LENGTH_LONG).show();
                             candidatar.setBackgroundColor(getResources().getColor(R.color.mdtp_accent_color));
                             String candidatura="Candidatar-se";
                             candidatar.setText(candidatura);
+                            candidatar.setEnabled(true);
+                            finish();
+                            startActivity(new Intent(DetalhesEventoActivity.this, HomeArtistaActivity.class));
 
                         }
                     });
@@ -120,6 +125,9 @@ public class DetalhesEventoActivity extends AppCompatActivity {
                             candidatar.setBackgroundColor(getResources().getColor(R.color.red));
                             String cancelar="Cancelar candidatura";
                             candidatar.setText(cancelar);
+                            finish();
+                            startActivity(new Intent(DetalhesEventoActivity.this, HomeArtistaActivity.class));
+
                         }
                     });
                 }

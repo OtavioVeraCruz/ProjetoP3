@@ -140,6 +140,7 @@
     <string name="detalhes_artista">Detalhes do Artista</string>
     <string name="artistas_em_destaque">Artistas em destaque</string>
     <string name="copie_e_cole_youtube">Copie e Cole a url do seu canal do youtube</string>
+    <string name="selecionar">Selecionar</string>
 
 
 </resources>

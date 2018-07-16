@@ -13,6 +13,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = remoteMessage.getNotification().getTitle();
             String body = remoteMessage.getNotification().getBody();
             NotificationReceiver.createNotificationMessage(this, title, body);
+
         }
     }
 }
